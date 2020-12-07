@@ -55,31 +55,31 @@ type MetaDataStore struct {
 	Metadata string //`json:"metaData"`
 	//Key string
 }
-type List struct{
+type List struct {
 	Tal string
 }
 type TalList struct {
-	Doctype string //`json:"docType"`
-	EntityId    string //`json:"user"`
-	TList []List//`json:"metaData"`
-	Key string
+	Doctype  string //`json:"docType"`
+	EntityId string //`json:"user"`
+	TList    []List //`json:"metaData"`
+	Key      string
 }
 type CodeStore struct {
-	Doctype string //`json:"docType"`
-	ForWhichSP    string ///`json:"forWhichSp"`
-	WhichIDP  string //`json:"whichIdp"`
-	Code string//`json:"code"`
-	Key string
+	Doctype    string //`json:"docType"`
+	ForWhichSP string ///`json:"forWhichSp"`
+	WhichIDP   string //`json:"whichIdp"`
+	Code       string //`json:"code"`
+	Key        string
 }
 type NewCodeStore struct {
-	Doctype string //`json:"docType"`
-	ForWhichSP    string ///`json:"forWhichSp"`
-	WhichIDP  string //`json:"whichIdp"`
-	SPCode string//`json:"code"`
-	IDPCode string
-	SPCheck string//`json:"code"`
-	IDPCheck string
-	Key string
+	Doctype    string //`json:"docType"`
+	ForWhichSP string ///`json:"forWhichSp"`
+	WhichIDP   string //`json:"whichIdp"`
+	SPCode     string //`json:"code"`
+	IDPCode    string
+	SPCheck    string //`json:"code"`
+	IDPCheck   string
+	Key        string
 }
 
 /*
@@ -151,47 +151,49 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	metaDatas := []MetaDataStore{
 		{Doctype: "MetaData Store", User: "www.idp1.org", Metadata: "entityid: \"https://mail.service.com/service/extension/samlreceiver \",\n  contacts: [],\n  \"metadata-set\": \"saml20-sp-remote\",\n  AssertionConsumerService: [\n    {\n      Binding: \"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\",\n      Location: \"https://mail.service.com/service/extension/samlreceiver\",\n      index: 0,\n    },\n  ],\n  SingleLogoutService: [],\n  \"validate.authnrequest\": false,\n  \"NameIDFormat\": \"urn:oasis:names:tc:"},
 	}
-	for i, metaData := range metaDatas {
-		metaDataBytes, _ := json.Marshal(metaData)
-		 APIstub.PutState("MetaData"+strconv.Itoa(i), metaDataBytes)
-	}
+	// for i, metaData := range metaDatas {
+	// 	metaDataBytes, _ := json.Marshal(metaData)
+	// 	 APIstub.PutState("MetaData"+strconv.Itoa(i), metaDataBytes)
+	// }
+	metaDataBytes, _ := json.Marshal(metaDatas)
+	APIstub.PutState("MetaData"+strconv.Itoa(1), metaDataBytes)
 	talList := TalList{
-		Doctype: "TAL List",
-		EntityId :  "www.idp.sust.com",
-		TList: [] List{
-			{Tal : "http://sp1.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp" },
-			{Tal : "http://sp2.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
-			{Tal : "http://code.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
-			{Tal : "http://18.191.122.156:3000/mailmetadata" },
+		Doctype:  "TAL List",
+		EntityId: "www.idp.sust.com",
+		TList: []List{
+			{Tal: "http://sp1.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
+			{Tal: "http://sp2.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
+			{Tal: "http://code.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
+			{Tal: "http://18.191.122.156:3000/mailmetadata"},
 		},
 		Key: "0001",
 	}
 	talListBytes, _ := json.Marshal(talList)
-    APIstub.PutState(talList.Key,talListBytes)
+	APIstub.PutState(talList.Key, talListBytes)
 
 	talListSp1 := TalList{
-		Doctype: "TAL List",
-		EntityId :  "www.sp1.sust.com",
-		TList: [] List{
-			{Tal :  "http://idp.sust.com/simplesaml/saml2/idp/metadata.php" },
+		Doctype:  "TAL List",
+		EntityId: "www.sp1.sust.com",
+		TList: []List{
+			{Tal: "http://idp.sust.com/simplesaml/saml2/idp/metadata.php"},
 		},
 		Key: "0002",
 	}
 	talListBytes1, _ := json.Marshal(talListSp1)
-	APIstub.PutState(talListSp1.Key,talListBytes1)
+	APIstub.PutState(talListSp1.Key, talListBytes1)
 
 	talListSp2 := TalList{
-		Doctype: "TAL List",
-		EntityId :  "www.sp2.sust.com",
-		TList: [] List{
-			{Tal :  "http://idp.sust.com/simplesaml/saml2/idp/metadata.php"},
+		Doctype:  "TAL List",
+		EntityId: "www.sp2.sust.com",
+		TList: []List{
+			{Tal: "http://idp.sust.com/simplesaml/saml2/idp/metadata.php"},
 		},
 		Key: "0003",
 	}
 	talListBytes2, _ := json.Marshal(talListSp2)
-	APIstub.PutState(talListSp2.Key,talListBytes2)
-	talListBytes2,  _ = json.Marshal(talListSp2)
-	APIstub.PutState(talListSp2.Key,talListBytes2)
+	APIstub.PutState(talListSp2.Key, talListBytes2)
+	talListBytes2, _ = json.Marshal(talListSp2)
+	APIstub.PutState(talListSp2.Key, talListBytes2)
 
 	return shim.Success(nil)
 }
@@ -206,7 +208,7 @@ func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []st
 
 	carAsBytes, _ := json.Marshal(car)
 	APIstub.PutState(args[0], carAsBytes)
- /////create car
+	/////create car
 	return shim.Success(nil)
 }
 
