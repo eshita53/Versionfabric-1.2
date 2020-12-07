@@ -157,17 +157,17 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	// }
 	metaDataBytes, _ := json.Marshal(metaDatas)
 	APIstub.PutState("MetaData"+strconv.Itoa(1), metaDataBytes)
-	talList := []TalList{
-		{Doctype: "TAL List",
-			EntityId: "www.idp.sust.com",
-			TList: []List{
-				{Tal: "http://sp1.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
-				{Tal: "http://sp2.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
-				{Tal: "http://code.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
-				{Tal: "http://18.191.122.156:3000/mailmetadata"},
-			},
-			Key: "0001",
-		}}
+	talList := TalList{
+		Doctype:  "TAL List",
+		EntityId: "www.idp.sust.com",
+		TList: []List{
+			{Tal: "http://sp1.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
+			{Tal: "http://sp2.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
+			{Tal: "http://code.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
+			{Tal: "http://18.191.122.156:3000/mailmetadata"},
+		},
+		Key: "0001",
+	}
 	talListBytes, _ := json.Marshal(talList)
 	APIstub.PutState(talList.Key, talListBytes)
 
