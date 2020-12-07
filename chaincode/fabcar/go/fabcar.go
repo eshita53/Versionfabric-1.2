@@ -180,7 +180,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 		Key: "0002",
 	}
 	talListBytes1, _ := json.Marshal(talListSp1)
-	APIstub.PutState(talListSp1.Key, talListBytes1)
+	APIstub.PutState("MetaData"+strconv.Itoa(1), talListBytes1)
 
 	talListSp2 := TalList{
 		Doctype:  "TAL List",
