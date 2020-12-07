@@ -80,6 +80,10 @@ type NewCodeStore struct {
 	IDPCheck   string
 	Key        string
 }
+type QueryResultMetaData struct {
+	Key    string //`json:"Key"`
+	Record *MetaDataStore
+}
 
 /*
  * The Init method is called when the Smart Contract "fabcar" is instantiated by the blockchain network
