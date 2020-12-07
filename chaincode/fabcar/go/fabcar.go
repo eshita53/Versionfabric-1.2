@@ -49,6 +49,12 @@ type Car struct {
 	Colour string `json:"colour"`
 	Owner  string `json:"owner"`
 }
+type MetaDataStore struct {
+	Doctype  string //`json:"docType"`
+	User     string //`json:"user"`
+	Metadata string //`json:"metaData"`
+	//Key string
+}
 
 /*
  * The Init method is called when the Smart Contract "fabcar" is instantiated by the blockchain network
@@ -93,26 +99,38 @@ func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []str
 }
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
-	cars := []Car{
-		Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko"},
-		Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad"},
-		Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo"},
-		Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max"},
-		Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana"},
-		Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel"},
-		Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav"},
-		Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari"},
-		Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria"},
-		Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro"},
-	}
+	// cars := []Car{
+	// 	Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko"},
+	// 	Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad"},
+	// 	Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo"},
+	// 	Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max"},
+	// 	Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana"},
+	// 	Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel"},
+	// 	Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav"},
+	// 	Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari"},
+	// 	Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria"},
+	// 	Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro"},
+	// }
 
-	i := 0
-	for i < len(cars) {
-		fmt.Println("i is ", i)
-		carAsBytes, _ := json.Marshal(cars[i])
-		APIstub.PutState("CAR"+strconv.Itoa(i), carAsBytes)
-		fmt.Println("Added", cars[i])
-		i = i + 1
+	// i := 0
+	// for i < len(cars) {
+	// 	fmt.Println("i is ", i)
+	// 	carAsBytes, _ := json.Marshal(cars[i])
+	// 	APIstub.PutState("CAR"+strconv.Itoa(i), carAsBytes)
+	// 	fmt.Println("Added", cars[i])
+	// 	i = i + 1
+	// }
+	metaDatas := []MetaDataStore{
+		{Doctype: "MetaData Store", User: "www.idp1.org", Metadata: "entityid: \"https://mail.service.com/service/extension/samlreceiver \",\n  contacts: [],\n  \"metadata-set\": \"saml20-sp-remote\",\n  AssertionConsumerService: [\n    {\n      Binding: \"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\",\n      Location: \"https://mail.service.com/service/extension/samlreceiver\",\n      index: 0,\n    },\n  ],\n  SingleLogoutService: [],\n  \"validate.authnrequest\": false,\n  \"NameIDFormat\": \"urn:oasis:names:tc:"},
+	}
+	for i, metaData := range metaDatas {
+		metaDataBytes, _ := json.Marshal(metaData)
+		err := APIstub.PutState("MetaData"+strconv.Itoa(i), metaDataBytes)
+
+		if err != nil {
+			return fmt.Errorf("failed to put to world state. %s", err.Error())
+		}
+
 	}
 
 	return shim.Success(nil)
