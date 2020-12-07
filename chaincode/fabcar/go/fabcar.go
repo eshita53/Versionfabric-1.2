@@ -148,10 +148,10 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	// 	i = i + 1
 	// }
 	metaDatas := MetaDataStore{
-		Doctype: "MetaData Store", 
-		User: "www.idp1.org",
+		Doctype:  "MetaData Store",
+		User:     "www.idp.org",
 		Metadata: "entityid: \"https://mail.service.com/service/extension/samlreceiver \",\n  contacts: [],\n  \"metadata-set\": \"saml20-sp-remote\",\n  AssertionConsumerService: [\n    {\n      Binding: \"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\",\n      Location: \"https://mail.service.com/service/extension/samlreceiver\",\n      index: 0,\n    },\n  ],\n  SingleLogoutService: [],\n  \"validate.authnrequest\": false,\n  \"NameIDFormat\": \"urn:oasis:names:tc:",
-		Key: "000",
+		Key:      "000",
 	}
 
 	// for i, metaData := range metaDatas {
@@ -160,7 +160,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	// }
 	metaDataBytes, _ := json.Marshal(metaDatas)
 	APIstub.PutState(metaDatas.Key, metaDataBytes)
-	
+
 	talList := TalList{
 		Doctype:  "TAL List",
 		EntityId: "www.idp.sust.com",
