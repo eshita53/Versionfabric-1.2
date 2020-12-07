@@ -1,12 +1,6 @@
-import (
-	"crypto/sha256"
-	"encoding/json"
-	"fmt"
-	"github.com/cd1/utils-golang"
-	"github.com/hyperledger/fabric/core/chaincode/shim"
-	sc "github.com/hyperledger/fabric/protos/peer"
-	"strconv"
-)
+package main
+
+import "fmt"
 type area struct {
 	Doctype  string
 	Name     string
