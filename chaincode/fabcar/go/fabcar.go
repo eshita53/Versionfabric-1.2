@@ -55,6 +55,32 @@ type MetaDataStore struct {
 	Metadata string //`json:"metaData"`
 	//Key string
 }
+type List struct{
+	Tal string
+}
+type TalList struct {
+	Doctype string //`json:"docType"`
+	EntityId    string //`json:"user"`
+	TList []List//`json:"metaData"`
+	Key string
+}
+type CodeStore struct {
+	Doctype string //`json:"docType"`
+	ForWhichSP    string ///`json:"forWhichSp"`
+	WhichIDP  string //`json:"whichIdp"`
+	Code string//`json:"code"`
+	Key string
+}
+type NewCodeStore struct {
+	Doctype string //`json:"docType"`
+	ForWhichSP    string ///`json:"forWhichSp"`
+	WhichIDP  string //`json:"whichIdp"`
+	SPCode string//`json:"code"`
+	IDPCode string
+	SPCheck string//`json:"code"`
+	IDPCheck string
+	Key string
+}
 
 /*
  * The Init method is called when the Smart Contract "fabcar" is instantiated by the blockchain network
@@ -82,6 +108,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	} else if function == "queryAllCars" {
 		return s.queryAllCars(APIstub)
 	} else if function == "changeCarOwner" {
+		return s.changeCarOwner(APIstub, args)
+	} else if function == "" {
 		return s.changeCarOwner(APIstub, args)
 	}
 
@@ -125,13 +153,45 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	}
 	for i, metaData := range metaDatas {
 		metaDataBytes, _ := json.Marshal(metaData)
-		err := APIstub.PutState("MetaData"+strconv.Itoa(i), metaDataBytes)
-
-		if err != nil {
-			return fmt.Errorf("failed to put to world state. %s", err.Error())
-		}
-
+		 APIstub.PutState("MetaData"+strconv.Itoa(i), metaDataBytes)
 	}
+	talList := TalList{
+		Doctype: "TAL List",
+		EntityId :  "www.idp.sust.com",
+		TList: [] List{
+			{Tal : "http://sp1.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp" },
+			{Tal : "http://sp2.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
+			{Tal : "http://code.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
+			{Tal : "http://18.191.122.156:3000/mailmetadata" },
+		},
+		Key: "0001",
+	}
+	talListBytes, _ := json.Marshal(talList)
+    APIstub.PutState(talList.Key,talListBytes)
+
+	talListSp1 := TalList{
+		Doctype: "TAL List",
+		EntityId :  "www.sp1.sust.com",
+		TList: [] List{
+			{Tal :  "http://idp.sust.com/simplesaml/saml2/idp/metadata.php" },
+		},
+		Key: "0002",
+	}
+	talListBytes1, _ := json.Marshal(talListSp1)
+	APIstub.PutState(talListSp1.Key,talListBytes1)
+
+	talListSp2 := TalList{
+		Doctype: "TAL List",
+		EntityId :  "www.sp2.sust.com",
+		TList: [] List{
+			{Tal :  "http://idp.sust.com/simplesaml/saml2/idp/metadata.php"},
+		},
+		Key: "0003",
+	}
+	talListBytes2, _ := json.Marshal(talListSp2)
+	APIstub.PutState(talListSp2.Key,talListBytes2)
+	talListBytes2,  _ = json.Marshal(talListSp2)
+	APIstub.PutState(talListSp2.Key,talListBytes2)
 
 	return shim.Success(nil)
 }
