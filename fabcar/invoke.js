@@ -62,7 +62,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	var request = {
 		//targets: let default to the peer assigned to the client
 		chaincodeId: 'fabcar',
-		fcn: 'UserFetch',
+		fcn: '',
 		args: ['www.idp.org'],
 		chainId: 'mychannel',
 		txId: tx_id

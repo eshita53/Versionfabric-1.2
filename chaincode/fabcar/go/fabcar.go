@@ -58,7 +58,7 @@ type List struct {
 }
 type TalList struct {
 	Doctype  string //`json:"docType"`
-	EntityId string //`json:"user"`
+	EntityID string //`json:"user"`
 	TList    []List //`json:"metaData"`
 	Key      string
 }
@@ -166,7 +166,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 
 	talList := TalList{
 		Doctype:  "TAL List",
-		EntityId: "www.idp.sust.com",
+		EntityID: "www.idp.sust.com",
 		TList: []List{
 			{Tal: "http://sp1.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
 			{Tal: "http://sp2.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
@@ -180,7 +180,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 
 	talListSp1 := TalList{
 		Doctype:  "TAL List",
-		EntityId: "www.sp1.sust.com",
+		EntityID: "www.sp1.sust.com",
 		TList: []List{
 			{Tal: "http://idp.sust.com/simplesaml/saml2/idp/metadata.php"},
 		},
@@ -191,7 +191,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 
 	talListSp2 := TalList{
 		Doctype:  "TAL List",
-		EntityId: "www.sp2.sust.com",
+		EntityID: "www.sp2.sust.com",
 		TList: []List{
 			{Tal: "http://idp.sust.com/simplesaml/saml2/idp/metadata.php"},
 		},
