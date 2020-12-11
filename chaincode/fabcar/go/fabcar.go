@@ -32,6 +32,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc "github.com/hyperledger/fabric/protos/peer"
 )
@@ -111,8 +112,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.queryAllCars(APIstub)
 	} else if function == "changeCarOwner" {
 		return s.changeCarOwner(APIstub, args)
-	} else if function == "UserFetch" {
-		return s.changeCarOwner(APIstub, args)
+	} else if function == "userFetch" {
+		return s.userFetch(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -217,9 +218,9 @@ func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []st
 	return shim.Success(nil)
 }
 
-func (s *SmartContract) UserFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
-	user:= args[0]
-	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}",user)
+func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
+	user := args[0]
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	resultsIterator, _ := APIstub.GetQueryResult(queryString)
 	defer resultsIterator.Close()
 	codeData := new(MetaDataStore)
@@ -227,12 +228,8 @@ func (s *SmartContract) UserFetch(APIstub shim.ChaincodeStubInterface, args []st
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
 	}
-   return codeData.User
+	return codeData.User
 }
-
-
-
-
 func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
 
 	startKey := "CAR0"
