@@ -218,7 +218,7 @@ func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []st
 	return shim.Success(nil)
 }
 
-func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
+func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	resultsIterator, _ := APIstub.GetQueryResult(queryString)
@@ -228,7 +228,7 @@ func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []st
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
 	}
-	return codeData.User
+	return shim.response(codeData.User)
 }
 func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
 
