@@ -228,7 +228,7 @@ func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []st
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
 	}
-	return shim.response(codeData.User)
+	return shim.Success(codeData.User)
 }
 func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
 
