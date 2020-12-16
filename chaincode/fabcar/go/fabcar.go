@@ -321,24 +321,33 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
-	queryResults, _ := APIstub.GetQueryResult(queryString)
-	var codeData metaDataStore
-	for queryResults.HasNext() {
-		queryResultsData, _ := queryResults.Next()
-		_ = json.Unmarshal(queryResultsData.Value, &codeData)
-	}
-	//  queryResults, _ := getQueryResultForQueryString(stub,queryString)
+	// queryResults, _ := APIstub.GetQueryResult(queryString)
+	// var codeData metaDataStore
+	// for queryResults.HasNext() {
+	// 	queryResultsData, _ := queryResults.Next()
+	// 	_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	// }
+	queryResults, _ := getJSONQueryResultForQueryString(stub, queryString)
 	// //var codeData metaDataStore
 	// // for queryResults.HasNext() {
 	// // 	queryResultsData, _ := queryResults.Next()
 	// // 	_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	// // }
-	// _ = json.Unmarshal(queryResults)
+	_ = json.Unmarshal(queryResults)
 
-
-
-	return codeData.User
+	return queryResults.User
 }
+
+func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
+	start := "{\"values\": "
+	end := "}"
+	data, err := getQueryResultForQueryString(stub, queryString)
+	if err != nil {
+		return nil, err
+	}
+	return []byte(start + string(data) + end), nil
+}
+
 func (s *SmartContract) fetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	//user := strings.ToLower(args[0])
 	user := args[0]
