@@ -41,6 +41,8 @@ import (
 type SmartContract struct {
 }
 
+var j = 0
+
 // Define the car structure, with 4 properties.  Structure tags are used by encoding/json library
 type Car struct {
 	Make   string `json:"make"`
@@ -112,8 +114,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.queryAllCars(APIstub)
 	} else if function == "changeCarOwner" {
 		return s.changeCarOwner(APIstub, args)
-	} else if function == "userFetch" {
-		return s.userFetch(APIstub, args)
+	} else if function == "storeMetaData" {
+		return s.storeMetaData(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -217,8 +219,32 @@ func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []st
 	/////create car
 	return shim.Success(nil)
 }
+func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
-func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
+	user := args[0]
+	metaData := args[1]
+	//var b string
+	result := s.userFetch(APIstub, args)
+	j++
+	b := string(j)
+	if result != user {
+		metaDataStore := MetaDataStore{
+			Doctype:  "MetaData Store",
+			User:     user,
+			Metadata: metaData,
+			Key:      b,
+		}
+		metaDataBytes, _ := json.Marshal(metaDataStore)
+		return APIstub.PutState(b, metaDataBytes)
+	}
+	return shim.Success(nil)
+
+}
+
+func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	resultsIterator, _ := APIstub.GetQueryResult(queryString)
@@ -228,7 +254,7 @@ func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []st
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
 	}
-	return shim.Success(bytes.NewBufferString(codeData.User))
+	return codeData.User
 }
 func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
 
