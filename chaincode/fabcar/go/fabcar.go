@@ -131,6 +131,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.storeMetaData(APIstub, args)
 	} else if function == "storeTalList" {
 		return s.storeTalList(APIstub, args)
+	} else if function == "fetch" {
+		return s.fetch(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -319,6 +321,19 @@ func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []st
 	}
 	return codeData.User
 }
+func (s *SmartContract) fetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	user := args[0]
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
+	resultsIterator, _ := APIstub.GetQueryResult(queryString)
+	defer resultsIterator.Close()
+	codeData := new(MetaDataStore)
+	for resultsIterator.HasNext() {
+		queryResponse, _ := resultsIterator.Next()
+		_ = json.Unmarshal(queryResponse.Value, codeData)
+	}
+	return shim.Success(codeData)
+}
+
 func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
 
 	startKey := "CAR0"
