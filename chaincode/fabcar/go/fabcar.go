@@ -322,11 +322,20 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	queryResults, _ := APIstub.GetQueryResult(queryString)
-	var codeData metaDataStore
+	var codeData []metaDataStore{}
 	for queryResults.HasNext() {
 		queryResultsData, _ := queryResults.Next()
 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	}
+	//  queryResults, _ := getQueryResultForQueryString(stub,queryString)
+	// //var codeData metaDataStore
+	// // for queryResults.HasNext() {
+	// // 	queryResultsData, _ := queryResults.Next()
+	// // 	_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	// // }
+	// _ = json.Unmarshal(queryResults)
+
+
 
 	return codeData.User
 }
