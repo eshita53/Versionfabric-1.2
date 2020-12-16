@@ -244,28 +244,30 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 	user := args[0]
 	metaData := args[1]
 	//var b string
-	///result := s.userFetch(APIstub, args)
+	result := userFetch(APIstub, args)
+	fmt.Println(result)
 	j++
 	b := string(j)
-	//	if result != user {
-	metadataStore := metaDataStore{
-		Doctype:  "MetaData Store",
-		User:     user,
-		Metadata: metaData,
-		Key:      b,
+	console.log(result)
+	if result != user {
+		metadataStore := metaDataStore{
+			Doctype:  "MetaData Store",
+			User:     user,
+			Metadata: metaData,
+			Key:      b,
+		}
+		metaDataBytes, _ := json.Marshal(metadataStore)
+		APIstub.PutState(metadataStore.Key, metaDataBytes)
+	} else {
+		metadataStore := metaDataStore{
+			Doctype:  "MetaData Store",
+			User:     "ACHE already",
+			Metadata: metaData,
+			Key:      b,
+		}
+		metaDataBytes, _ := json.Marshal(metadataStore)
+		APIstub.PutState(metadataStore.Key, metaDataBytes)
 	}
-	metaDataBytes, _ := json.Marshal(metadataStore)
-	APIstub.PutState(metadataStore.Key, metaDataBytes)
-	// } else {
-	// 	metadataStore := metaDataStore{
-	// 		Doctype:  "MetaData Store",
-	// 		User:     "ACHE already",
-	// 		Metadata: metaData,
-	// 		Key:      b,
-	// 	}
-	// 	metaDataBytes, _ := json.Marshal(metadataStore)
-	// 	APIstub.PutState(metadataStore.Key, metaDataBytes)
-	// }
 	return shim.Success(nil)
 
 }
@@ -318,7 +320,8 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 
 }
 
-func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+//func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
+func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	queryResults, _ := APIstub.GetQueryResult(queryString)
@@ -335,7 +338,8 @@ func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []st
 	// // // }
 	// //_ = json.Unmarshal(queryResults)
 
-	return shim.Success([]byte(codeData.User))
+	// shim.Success([]byte(codeData.User))
+	return codeData.User
 }
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
