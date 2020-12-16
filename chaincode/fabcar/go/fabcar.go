@@ -85,7 +85,7 @@ type newCodeStore struct {
 }
 type queryResultMetaData struct {
 	Key    string //`json:"Key"`
-	Record *MetaDataStore
+	Record *metaDataStore
 }
 type queryResultCode struct {
 	Key    string //`json:"Key"`
