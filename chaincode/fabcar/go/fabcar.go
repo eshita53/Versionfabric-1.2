@@ -187,7 +187,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	talListIdp := talList{
 		Doctype:  "TAL List",
 		EntityID: "www.idp.sust.com",
-		TList: []List{
+		TList: []list{
 			{Tal: "http://sp1.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
 			{Tal: "http://sp2.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
 			{Tal: "http://code.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
@@ -201,7 +201,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	talListSp1 := talList{
 		Doctype:  "TAL List",
 		EntityID: "www.sp1.sust.com",
-		TList: []List{
+		TList: []list{
 			{Tal: "http://idp.sust.com/simplesaml/saml2/idp/metadata.php"},
 		},
 		Key: "0002",
@@ -255,7 +255,7 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 			Key:      b,
 		}
 		metaDataBytes, _ := json.Marshal(metadataStore)
-		APIstub.PutState(metaDataStore.Key, metaDataBytes)
+		APIstub.PutState(metadataStore.Key, metaDataBytes)
 	} else {
 		metadataStore := metaDataStore{
 			Doctype:  "MetaData Store",
@@ -306,7 +306,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	talListBytes, _ := json.Marshal(tallist)
 
 	if codeData.EntityID == entityID {
-		l := List{}
+		l := list{}
 		l.Tal = tal
 		codeData.TList = append(codeData.TList, l)
 		codeDataBytes, _ := json.Marshal(codeData)
