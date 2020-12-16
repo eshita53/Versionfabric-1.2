@@ -131,8 +131,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.storeMetaData(APIstub, args)
 	} else if function == "storeTalList" {
 		return s.storeTalList(APIstub, args)
-	} else if function == "userFetch" {
-		return s.userFetch(APIstub, args)
+	} else if function == "fetch" {
+		return s.fetch(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -248,7 +248,6 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 	fmt.Println(result)
 	j++
 	b := string(j)
-	console.log(result)
 	if result != user {
 		metadataStore := metaDataStore{
 			Doctype:  "MetaData Store",
