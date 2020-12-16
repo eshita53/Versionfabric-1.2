@@ -288,7 +288,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	codeData := talList
 	for queryResults.HasNext() {
 		queryResultsData, _ := queryResults.Next()
-		_ = json.Unmarshal(queryResultsData.Value, codeData)
+		_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	}
 	//data := MetaDataStore{}
 	// var results []QueryResultTalList
