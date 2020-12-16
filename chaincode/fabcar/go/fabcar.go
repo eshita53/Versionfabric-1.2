@@ -321,9 +321,8 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
-	queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
+	queryResults, _ := APIstub.GetQueryResult(queryString)
 	var codeData metaDataStore
-
 	for queryResults.HasNext() {
 		queryResultsData, _ := queryResults.Next()
 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
