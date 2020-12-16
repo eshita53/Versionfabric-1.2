@@ -322,7 +322,7 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-	var codeData metaDataStore
+	var codeData metaDataStore {}
 	_ = json.Unmarshal(codeData, &queryResults)
 	return codeData.User
 }
