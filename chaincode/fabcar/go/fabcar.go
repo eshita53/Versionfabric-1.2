@@ -328,14 +328,14 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	// 	_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	// }
 	queryResults, _ := getJSONQueryResultForQueryString(stub, queryString)
-	// //var codeData metaDataStore
+	var codeData metaDataStore
 	// // for queryResults.HasNext() {
 	// // 	queryResultsData, _ := queryResults.Next()
-	// // 	_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	_ = json.Unmarshal(queryResults, &codeData)
 	// // }
-	_ = json.Unmarshal(queryResults)
+	//_ = json.Unmarshal(queryResults)
 
-	return queryResults.User
+	return codeData.User
 }
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
