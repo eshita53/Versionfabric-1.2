@@ -149,27 +149,6 @@ func (s *SmartContract) queryCar(APIstub shim.ChaincodeStubInterface, args []str
 }
 
 func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Response {
-	// cars := []Car{
-	// 	Car{Make: "Toyota", Model: "Prius", Colour: "blue", Owner: "Tomoko"},
-	// 	Car{Make: "Ford", Model: "Mustang", Colour: "red", Owner: "Brad"},
-	// 	Car{Make: "Hyundai", Model: "Tucson", Colour: "green", Owner: "Jin Soo"},
-	// 	Car{Make: "Volkswagen", Model: "Passat", Colour: "yellow", Owner: "Max"},
-	// 	Car{Make: "Tesla", Model: "S", Colour: "black", Owner: "Adriana"},
-	// 	Car{Make: "Peugeot", Model: "205", Colour: "purple", Owner: "Michel"},
-	// 	Car{Make: "Chery", Model: "S22L", Colour: "white", Owner: "Aarav"},
-	// 	Car{Make: "Fiat", Model: "Punto", Colour: "violet", Owner: "Pari"},
-	// 	Car{Make: "Tata", Model: "Nano", Colour: "indigo", Owner: "Valeria"},
-	// 	Car{Make: "Holden", Model: "Barina", Colour: "brown", Owner: "Shotaro"},
-	// }
-
-	// i := 0
-	// for i < len(cars) {
-	// 	fmt.Println("i is ", i)
-	// 	carAsBytes, _ := json.Marshal(cars[i])
-	// 	APIstub.PutState("CAR"+strconv.Itoa(i), carAsBytes)
-	// 	fmt.Println("Added", cars[i])
-	// 	i = i + 1
-	// }
 	metaDatas := metaDataStore{
 		Doctype:  "MetaData Store",
 		User:     "www.idp.org",
@@ -236,6 +215,8 @@ func (s *SmartContract) createCar(APIstub shim.ChaincodeStubInterface, args []st
 	/////create car
 	return shim.Success(nil)
 }
+
+/// store metadata is working absulately fine
 func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 2 {
@@ -302,21 +283,14 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	entityID := args[0]
 	tal := args[1]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityId\": \"%s\"}}", entityID)
-	resultsIterator, _ := APIstub.GetQueryResult(queryString)
-	//if err != nil {
-	//	return nil, nil
-	//}
-	defer resultsIterator.Close()
-	codeData := new(talList)
+	queryResults, _ := APIstub.GetQueryResult(queryString)
+	var codeData tellList
+	for queryResults.HasNext() {
+		queryResultsData, _ := queryResults.Next()
+		_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	}
 	//data := MetaDataStore{}
 	// var results []QueryResultTalList
-
-	for resultsIterator.HasNext() {
-		queryResponse, _ := resultsIterator.Next()
-		_ = json.Unmarshal(queryResponse.Value, codeData)
-		// queryResult := QueryResultTalList{Key: queryResponse.Key, Record: codeData}
-		// results = append(results, queryResult)
-	}
 	tallist := talList{
 		Doctype:  "TAL List",
 		EntityID: entityID,
