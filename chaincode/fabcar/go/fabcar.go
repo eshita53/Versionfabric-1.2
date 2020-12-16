@@ -326,10 +326,13 @@ func (s *SmartContract) fetch(APIstub shim.ChaincodeStubInterface, args []string
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	resultsIterator, _ := APIstub.GetQueryResult(queryString)
 	defer resultsIterator.Close()
+	var results []QueryResultMetaData
 	codeData := new(MetaDataStore)
 	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
+		queryResult := QueryResultMetaData{Key: queryResponse.Key, Record: codeData}
+		results = append(results, queryResult)
 	}
 	return shim.Success(codeData)
 }
