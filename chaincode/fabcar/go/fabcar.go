@@ -248,19 +248,31 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 	fmt.Println(result)
 	j++
 	b := string(j)
-	if result != user {
+	if result == user {
+		// metadataStore := metaDataStore{
+		// 	Doctype:  "MetaData Store",
+		// 	User:     user,
+		// 	Metadata: metaData,
+		// 	Key:      b,
+		// }
 		metadataStore := metaDataStore{
 			Doctype:  "MetaData Store",
-			User:     user,
+			User:     "ACHE already",
 			Metadata: metaData,
 			Key:      b,
 		}
 		metaDataBytes, _ := json.Marshal(metadataStore)
 		APIstub.PutState(metadataStore.Key, metaDataBytes)
 	} else {
+		// metadataStore := metaDataStore{
+		// 	Doctype:  "MetaData Store",
+		// 	User:     "ACHE already",
+		// 	Metadata: metaData,
+		// 	Key:      b,
+		// }
 		metadataStore := metaDataStore{
 			Doctype:  "MetaData Store",
-			User:     "ACHE already",
+			User:     user,
 			Metadata: metaData,
 			Key:      b,
 		}
