@@ -131,8 +131,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.storeMetaData(APIstub, args)
 	} else if function == "storeTalList" {
 		return s.storeTalList(APIstub, args)
-	} else if function == "fetch" {
-		return s.fetch(APIstub, args)
+	} else if function == "userFetch" {
+		return s.userFetch(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -244,7 +244,7 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 	user := args[0]
 	metaData := args[1]
 	//var b string
-	result := userFetch(APIstub, args)
+	result := s.userFetch(APIstub, args)
 	j++
 	b := string(j)
 	if result != user {
@@ -266,7 +266,7 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 		metaDataBytes, _ := json.Marshal(metadataStore)
 		APIstub.PutState(metadataStore.Key, metaDataBytes)
 	}
-	return shim.Success([]byte(result))
+	return shim.Success(nil)
 
 }
 
@@ -318,7 +318,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 
 }
 
-func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
+func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response{
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	// queryResults, _ := APIstub.GetQueryResult(queryString)
@@ -335,7 +335,7 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	// // }
 	//_ = json.Unmarshal(queryResults)
 
-	return codeData.User
+	return shim.Success([]byte(codeData.User))
 }
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
