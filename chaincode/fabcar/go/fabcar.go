@@ -334,7 +334,7 @@ func (s *SmartContract) fetch(APIstub shim.ChaincodeStubInterface, args []string
 		queryResult := QueryResultMetaData{Key: queryResponse.Key, Record: codeData}
 		results = append(results, queryResult)
 	}
-	return shim.Success(codeData)
+	return shim.Success(results)
 }
 
 func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
