@@ -89,15 +89,15 @@ type queryResultMetaData struct {
 }
 type queryResultCode struct {
 	Key    string //`json:"Key"`
-	Record *CodeStore
+	Record *codeStore
 }
 type queryResultTalList struct {
 	Key    string //`json:"Key"`
-	Record *TalList
+	Record *talList
 }
 type queryResultNewCode struct {
 	Key    string //`json:"Key"`
-	Record *NewCodeStore
+	Record *newCodeStore
 }
 
 /*
@@ -285,7 +285,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	//	return nil, nil
 	//}
 	defer resultsIterator.Close()
-	codeData := new(TalList)
+	codeData := new(talList)
 	//data := MetaDataStore{}
 	// var results []QueryResultTalList
 
@@ -295,7 +295,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 		// queryResult := QueryResultTalList{Key: queryResponse.Key, Record: codeData}
 		// results = append(results, queryResult)
 	}
-	talList := TalList{
+	tallist := talList{
 		Doctype:  "TAL List",
 		EntityID: entityID,
 		TList: []List{
@@ -303,7 +303,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 		},
 		Key: key,
 	}
-	talListBytes, _ := json.Marshal(talList)
+	talListBytes, _ := json.Marshal(tallist)
 
 	if codeData.EntityID == entityID {
 		l := List{}
@@ -312,7 +312,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 		codeDataBytes, _ := json.Marshal(codeData)
 		APIstub.PutState(codeData.Key, codeDataBytes)
 	} else {
-		APIstub.PutState(talList.Key, talListBytes)
+		APIstub.PutState(tallist.Key, talListBytes)
 	}
 	return shim.Success(nil)
 
