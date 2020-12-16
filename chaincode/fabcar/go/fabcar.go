@@ -335,27 +335,16 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	// shim.Success([]byte(codeData.User))
 	return codeData.User
 }
-func entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response{
-		entityID := args[0]
-		//tal := args[1]
-		queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityId\": \"%s\"}}", entityID)
-		queryResults, _ := APIstub.GetQueryResult(queryString)
-		defer queryResults.Close()
-		var codeData talList
-		for queryResults.HasNext() {
-			queryResultsData, _ := queryResults.Next()
-			_ = json.Unmarshal(queryResultsData.Value, &codeData)
-		}
-		// queryResults, _ := getJSONQueryResultForQueryString(APIstub, queryString)
-		// var codeData metaDataStore
-		// // // for queryResults.HasNext() {
-		// // // 	queryResultsData, _ := queryResults.Next()
-		// _ = json.Unmarshal(queryResults, &codeData)
-		// // // }
-		// //_ = json.Unmarshal(queryResults)
-	
-		 return shim.Success(codeData.TList)
-		//return codeData.
+func (s *SmartContract) entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	entityID := args[0]
+	//tal := args[1]
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityId\": \"%s\"}}", entityID)
+	queryResults, _ := APIstub.GetQueryResult(queryString)
+	defer queryResults.Close()
+	var codeData talList
+	for queryResults.HasNext() {
+		queryResultsData, _ := queryResults.Next()
+		_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	}
 	// queryResults, _ := getJSONQueryResultForQueryString(APIstub, queryString)
 	// var codeData metaDataStore
@@ -365,11 +354,20 @@ func entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response
 	// // // }
 	// //_ = json.Unmarshal(queryResults)
 
-	// shim.Success([]byte(codeData.User))
-	//return codeData.User
+	return shim.Success(codeData.TList)
+	//return codeData.
+}
 
+// queryResults, _ := getJSONQueryResultForQueryString(APIstub, queryString)
+// var codeData metaDataStore
+// // // for queryResults.HasNext() {
+// // // 	queryResultsData, _ := queryResults.Next()
+// _ = json.Unmarshal(queryResults, &codeData)
+// // // }
+// //_ = json.Unmarshal(queryResults)
 
-
+// shim.Success([]byte(codeData.User))
+//return codeData.User
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
 	start := "{\"values\": "
