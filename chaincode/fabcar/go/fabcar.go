@@ -184,7 +184,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	metaDataBytes, _ := json.Marshal(metaDatas)
 	APIstub.PutState(metaDatas.Key, metaDataBytes)
 
-	talList := talList{
+	talListIdp := talList{
 		Doctype:  "TAL List",
 		EntityID: "www.idp.sust.com",
 		TList: []List{
@@ -195,10 +195,10 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 		},
 		Key: "0001",
 	}
-	talListBytes, _ := json.Marshal(talList)
-	APIstub.PutState(talList.Key, talListBytes)
+	talListBytes, _ := json.Marshal(talListIdp)
+	APIstub.PutState(talListIdp.Key, talListBytes)
 
-	talListSp1 := TalList{
+	talListSp1 := talList{
 		Doctype:  "TAL List",
 		EntityID: "www.sp1.sust.com",
 		TList: []List{
@@ -209,10 +209,10 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	talListBytes1, _ := json.Marshal(talListSp1)
 	APIstub.PutState(talListSp1.Key, talListBytes1)
 
-	talListSp2 := TalList{
+	talListSp2 := talList{
 		Doctype:  "TAL List",
 		EntityID: "www.sp2.sust.com",
-		TList: []List{
+		TList: []list{
 			{Tal: "http://idp.sust.com/simplesaml/saml2/idp/metadata.php"},
 		},
 		Key: "0003",
@@ -264,7 +264,7 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 			Key:      b,
 		}
 		metaDataBytes, _ := json.Marshal(metaDataStore)
-		APIstub.PutState(metaDataStore.Key, metaDataBytes)
+		APIstub.PutState(metadataStore.Key, metaDataBytes)
 	}
 	return shim.Success(nil)
 
@@ -298,7 +298,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	tallist := talList{
 		Doctype:  "TAL List",
 		EntityID: entityID,
-		TList: []List{
+		TList: []list{
 			{Tal: tal},
 		},
 		Key: key,
