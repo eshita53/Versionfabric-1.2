@@ -63,7 +63,7 @@ type list struct {
 type talList struct {
 	Doctype  string //`json:"docType"`
 	EntityID string //`json:"user"`
-	TList    []List //`json:"metaData"`
+	TList    []list //`json:"metaData"`
 	Key      string
 }
 type codeStore struct {
