@@ -301,7 +301,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	}
 	talListBytes, _ := json.Marshal(tallist)
 	if codeData.EntityID == args[0] {
-		l := list
+		l := list{}
 		l.Tal = tal
 		codeData.TList = append(codeData.TList, l)
 		codeDataBytes, _ := json.Marshal(codeData)
