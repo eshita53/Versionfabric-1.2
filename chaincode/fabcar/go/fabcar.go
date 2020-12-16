@@ -285,7 +285,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityId\": \"%s\"}}", entityID)
 	queryResults, _ := APIstub.GetQueryResult(queryString)
 	defer queryResults.Close()
-	codeData := talList
+	var codeData talList
 	for queryResults.HasNext() {
 		queryResultsData, _ := queryResults.Next()
 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
