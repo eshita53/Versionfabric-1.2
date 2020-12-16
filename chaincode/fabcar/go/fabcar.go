@@ -41,7 +41,8 @@ import (
 type SmartContract struct {
 }
 
-var j = 0
+ var j = 0
+ var m = 0
 
 // Define the car structure, with 4 properties.  Structure tags are used by encoding/json library
 type Car struct {
@@ -86,7 +87,19 @@ type QueryResultMetaData struct {
 	Key    string //`json:"Key"`
 	Record *MetaDataStore
 }
-
+}
+type QueryResultCode struct {
+	Key string //`json:"Key"`
+	Record *CodeStore
+}
+type QueryResultTalList struct {
+	Key string //`json:"Key"`
+	Record *TalList
+}
+type QueryResultNewCode struct {
+	Key string //`json:"Key"`
+	Record *NewCodeStore
+}
 /*
  * The Init method is called when the Smart Contract "fabcar" is instantiated by the blockchain network
  * Best practice is to have any Ledger initialization in separate function -- see initLedger()
@@ -116,6 +129,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.changeCarOwner(APIstub, args)
 	} else if function == "storeMetaData" {
 		return s.storeMetaData(APIstub, args)
+	} else if function == "storeTalList" {
+		return s.storeTalList(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -243,6 +258,67 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 	return shim.Success(nil)
 
 }
+
+func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
+	m++
+	key := string(m)
+	entityID := args[0]
+	tal := args[1]
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityId\": \"%s\"}}", entityID)
+	resultsIterator, _ := APIstub.GetQueryResult(queryString)
+	//if err != nil {
+	//	return nil, nil
+	//}
+	defer resultsIterator.Close()
+	codeData := new(TalList)
+	//data := MetaDataStore{}
+	var results []QueryResultTalList
+
+	for resultsIterator.HasNext() {
+		queryResponse, _ := resultsIterator.Next()
+		_ = json.Unmarshal(queryResponse.Value, codeData)
+		queryResult := QueryResultTalList{Key: queryResponse.Key, Record: codeData}
+		results = append(results, queryResult)
+	}
+	talList := TalList{
+		Doctype: "TAL List",
+		EntityId :  entityID,
+		TList: [] List{
+			{Tal : tal },
+		},
+		Key: key,
+	}
+	talListBytes, _ := json.Marshal(talList)
+
+	if codeData.EntityId == entityID{
+		l := List{}
+		l.Tal =tal
+		codeData.TList= append(codeData.TList, l)
+		codeDataBytes, _ := json.Marshal(codeData)
+    return APIstub.PutState(codeData.Key,codeDataBytes)
+	} else{
+		return APIstub.PutState(talList.Key,talListBytes)
+	}
+	return shim.Success(nil)
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
