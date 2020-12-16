@@ -270,7 +270,7 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 		// 	Key:      b,
 		// }
 		metaDataBytes, _ := json.Marshal(metadataStore)
-		APIstub.PutState(metadataStore.Key, metaDataBytes
+		APIstub.PutState(metadataStore.Key, metaDataBytes)
 		return shim.Success(nil)
 	} else {
 		metadataStore := metaDataStore{
