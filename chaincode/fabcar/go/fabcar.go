@@ -244,7 +244,7 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 	user := args[0]
 	metaData := args[1]
 	//var b string
-	result := s.userFetch(APIstub, args)
+	///result := s.userFetch(APIstub, args)
 	j++
 	b := string(j)
 	//	if result != user {
