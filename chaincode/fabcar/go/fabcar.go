@@ -256,6 +256,15 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 		}
 		metaDataBytes, _ := json.Marshal(metaDataStore)
 		APIstub.PutState(metaDataStore.Key, metaDataBytes)
+	} else {
+		metaDataStore := MetaDataStore{
+			Doctype:  "MetaData Store",
+			User:     "ACHE already",
+			Metadata: metaData,
+			Key:      b,
+		}
+		metaDataBytes, _ := json.Marshal(metaDataStore)
+		APIstub.PutState(metaDataStore.Key, metaDataBytes)
 	}
 	return shim.Success(nil)
 
@@ -309,16 +318,12 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 
 }
 
-func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
+func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
-	resultsIterator, _ := APIstub.GetQueryResult(queryString)
-	defer resultsIterator.Close()
-	codeData := new(MetaDataStore)
-	for resultsIterator.HasNext() {
-		queryResponse, _ := resultsIterator.Next()
-		_ = json.Unmarshal(queryResponse.Value, codeData)
-	}
+	queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
+	var codeData MetaDataStore
+	_ = json.Unmarshal(codeData, &queryResults)
 	return codeData.User
 }
 func (s *SmartContract) fetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
