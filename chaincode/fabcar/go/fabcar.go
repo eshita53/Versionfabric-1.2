@@ -247,15 +247,15 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 	result := s.userFetch(APIstub, args)
 	j++
 	b := string(j)
-//	if result != user {
-		metadataStore := metaDataStore{
-			Doctype:  "MetaData Store",
-			User:     user,
-			Metadata: metaData,
-			Key:      b,
-	//	}
-		metaDataBytes, _ := json.Marshal(metadataStore)
-		APIstub.PutState(metadataStore.Key, metaDataBytes)
+	//	if result != user {
+	metadataStore := metaDataStore{
+		Doctype:  "MetaData Store",
+		User:     user,
+		Metadata: metaData,
+		Key:      b,
+	}
+	metaDataBytes, _ := json.Marshal(metadataStore)
+	APIstub.PutState(metadataStore.Key, metaDataBytes)
 	// } else {
 	// 	metadataStore := metaDataStore{
 	// 		Doctype:  "MetaData Store",
@@ -318,7 +318,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 
 }
 
-func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response{
+func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	// queryResults, _ := APIstub.GetQueryResult(queryString)
