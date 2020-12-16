@@ -322,8 +322,13 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-	var codeData metaDataStore {}
-	_ = json.Unmarshal(codeData, &queryResults)
+	var codeData metaDataStore
+
+	for queryResults.HasNext() {
+		queryResultsData, _ := queryResults.Next()
+		_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	}
+
 	return codeData.User
 }
 func (s *SmartContract) fetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
