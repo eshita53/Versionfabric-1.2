@@ -354,7 +354,7 @@ func (s *SmartContract) entityFetch(APIstub shim.ChaincodeStubInterface, args []
 	// // // }
 	// //_ = json.Unmarshal(queryResults)
 
-	return shim.Success(codeData.TList)
+	return shim.Success([]byte(codeData.TList))
 	//return codeData.
 }
 
