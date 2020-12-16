@@ -367,7 +367,7 @@ func entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response
 
 	// shim.Success([]byte(codeData.User))
 	//return codeData.User
-}
+
 
 
 
