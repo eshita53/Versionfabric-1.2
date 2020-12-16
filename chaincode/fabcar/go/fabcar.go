@@ -282,7 +282,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	key := string(m)
 	entityID := args[0]
 	tal := args[1]
-	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityId\": \"%s\"}}", entityID)
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
 	queryResults, _ := APIstub.GetQueryResult(queryString)
 	defer queryResults.Close()
 	var codeData talList
@@ -338,7 +338,7 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 func (s *SmartContract) entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	entityID := args[0]
 	//tal := args[1]
-	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityId\": \"%s\"}}", entityID)
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
 	queryResults, _ := APIstub.GetQueryResult(queryString)
 	defer queryResults.Close()
 	var codeData talList
