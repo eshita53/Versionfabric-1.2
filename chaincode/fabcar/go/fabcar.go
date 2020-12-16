@@ -327,7 +327,7 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	// 	queryResultsData, _ := queryResults.Next()
 	// 	_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	// }
-	queryResults, _ := getJSONQueryResultForQueryString(stub, queryString)
+	queryResults, _ := getJSONQueryResultForQueryString(APIstub, queryString)
 	var codeData metaDataStore
 	// // for queryResults.HasNext() {
 	// // 	queryResultsData, _ := queryResults.Next()
