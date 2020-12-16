@@ -276,13 +276,13 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	defer resultsIterator.Close()
 	codeData := new(TalList)
 	//data := MetaDataStore{}
-	var results []QueryResultTalList
+	// var results []QueryResultTalList
 
 	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
-		queryResult := QueryResultTalList{Key: queryResponse.Key, Record: codeData}
-		results = append(results, queryResult)
+		// queryResult := QueryResultTalList{Key: queryResponse.Key, Record: codeData}
+		// results = append(results, queryResult)
 	}
 	talList := TalList{
 		Doctype:  "TAL List",
@@ -306,9 +306,6 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	return shim.Success(nil)
 
 }
-
-
-
 
 func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
