@@ -266,8 +266,8 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 	} else {
 		metadataStore := metaDataStore{
 			Doctype:  "MetaData Store",
-			User:     "ACHE already",
-			Metadata: metaData,
+			User:     user,
+			Metadata: "ACHE already",
 			Key:      b,
 		}
 		// metadataStore := metaDataStore{
