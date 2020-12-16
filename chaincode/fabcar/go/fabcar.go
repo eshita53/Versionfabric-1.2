@@ -41,8 +41,8 @@ import (
 type SmartContract struct {
 }
 
- var j = 0
- var m = 0
+var j = 0
+var m = 0
 
 // Define the car structure, with 4 properties.  Structure tags are used by encoding/json library
 type Car struct {
@@ -87,19 +87,19 @@ type QueryResultMetaData struct {
 	Key    string //`json:"Key"`
 	Record *MetaDataStore
 }
-}
 type QueryResultCode struct {
-	Key string //`json:"Key"`
+	Key    string //`json:"Key"`
 	Record *CodeStore
 }
 type QueryResultTalList struct {
-	Key string //`json:"Key"`
+	Key    string //`json:"Key"`
 	Record *TalList
 }
 type QueryResultNewCode struct {
-	Key string //`json:"Key"`
+	Key    string //`json:"Key"`
 	Record *NewCodeStore
 }
+
 /*
  * The Init method is called when the Smart Contract "fabcar" is instantiated by the blockchain network
  * Best practice is to have any Ledger initialization in separate function -- see initLedger()
@@ -285,37 +285,27 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 		results = append(results, queryResult)
 	}
 	talList := TalList{
-		Doctype: "TAL List",
-		EntityId :  entityID,
-		TList: [] List{
-			{Tal : tal },
+		Doctype:  "TAL List",
+		EntityID: entityID,
+		TList: []List{
+			{Tal: tal},
 		},
 		Key: key,
 	}
 	talListBytes, _ := json.Marshal(talList)
 
-	if codeData.EntityId == entityID{
+	if codeData.EntityID == entityID {
 		l := List{}
-		l.Tal =tal
-		codeData.TList= append(codeData.TList, l)
+		l.Tal = tal
+		codeData.TList = append(codeData.TList, l)
 		codeDataBytes, _ := json.Marshal(codeData)
-    return APIstub.PutState(codeData.Key,codeDataBytes)
-	} else{
-		return APIstub.PutState(talList.Key,talListBytes)
+		APIstub.PutState(codeData.Key, codeDataBytes)
+	} else {
+		APIstub.PutState(talList.Key, talListBytes)
 	}
 	return shim.Success(nil)
 
 }
-
-
-
-
-
-
-
-
-
-
 
 
 
