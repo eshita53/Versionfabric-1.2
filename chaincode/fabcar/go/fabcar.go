@@ -354,7 +354,7 @@ func entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response
 		// // // }
 		// //_ = json.Unmarshal(queryResults)
 	
-		 shim.Success(codeData.TList)
+		 return shim.Success(codeData.TList)
 		//return codeData.
 	}
 	// queryResults, _ := getJSONQueryResultForQueryString(APIstub, queryString)
@@ -366,7 +366,7 @@ func entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response
 	// //_ = json.Unmarshal(queryResults)
 
 	// shim.Success([]byte(codeData.User))
-	return codeData.User
+	//return codeData.User
 }
 
 
