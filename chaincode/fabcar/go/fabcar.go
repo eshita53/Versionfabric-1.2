@@ -51,29 +51,29 @@ type Car struct {
 	Colour string `json:"colour"`
 	Owner  string `json:"owner"`
 }
-type MetaDataStore struct {
+type metaDataStore struct {
 	Doctype  string //`json:"docType"`
 	User     string //`json:"user"`
 	Metadata string //`json:"metaData"`
 	Key      string
 }
-type List struct {
+type list struct {
 	Tal string
 }
-type TalList struct {
+type talList struct {
 	Doctype  string //`json:"docType"`
 	EntityID string //`json:"user"`
 	TList    []List //`json:"metaData"`
 	Key      string
 }
-type CodeStore struct {
+type codeStore struct {
 	Doctype    string //`json:"docType"`
 	ForWhichSP string ///`json:"forWhichSp"`
 	WhichIDP   string //`json:"whichIdp"`
 	Code       string //`json:"code"`
 	Key        string
 }
-type NewCodeStore struct {
+type newCodeStore struct {
 	Doctype    string //`json:"docType"`
 	ForWhichSP string ///`json:"forWhichSp"`
 	WhichIDP   string //`json:"whichIdp"`
@@ -83,19 +83,19 @@ type NewCodeStore struct {
 	IDPCheck   string
 	Key        string
 }
-type QueryResultMetaData struct {
+type queryResultMetaData struct {
 	Key    string //`json:"Key"`
 	Record *MetaDataStore
 }
-type QueryResultCode struct {
+type queryResultCode struct {
 	Key    string //`json:"Key"`
 	Record *CodeStore
 }
-type QueryResultTalList struct {
+type queryResultTalList struct {
 	Key    string //`json:"Key"`
 	Record *TalList
 }
-type QueryResultNewCode struct {
+type queryResultNewCode struct {
 	Key    string //`json:"Key"`
 	Record *NewCodeStore
 }
@@ -170,7 +170,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	// 	fmt.Println("Added", cars[i])
 	// 	i = i + 1
 	// }
-	metaDatas := MetaDataStore{
+	metaDatas := metaDataStore{
 		Doctype:  "MetaData Store",
 		User:     "www.idp.org",
 		Metadata: "entityid: \"https://mail.service.com/service/extension/samlreceiver \",\n  contacts: [],\n  \"metadata-set\": \"saml20-sp-remote\",\n  AssertionConsumerService: [\n    {\n      Binding: \"urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST\",\n      Location: \"https://mail.service.com/service/extension/samlreceiver\",\n      index: 0,\n    },\n  ],\n  SingleLogoutService: [],\n  \"validate.authnrequest\": false,\n  \"NameIDFormat\": \"urn:oasis:names:tc:",
@@ -184,7 +184,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 	metaDataBytes, _ := json.Marshal(metaDatas)
 	APIstub.PutState(metaDatas.Key, metaDataBytes)
 
-	talList := TalList{
+	talList := talList{
 		Doctype:  "TAL List",
 		EntityID: "www.idp.sust.com",
 		TList: []List{
@@ -244,20 +244,20 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 	user := args[0]
 	metaData := args[1]
 	//var b string
-	result := s.userFetch(APIstub, args)
+	result := userFetch(APIstub, args)
 	j++
 	b := string(j)
 	if result != user {
-		metaDataStore := MetaDataStore{
+		metadataStore := metaDataStore{
 			Doctype:  "MetaData Store",
 			User:     user,
 			Metadata: metaData,
 			Key:      b,
 		}
-		metaDataBytes, _ := json.Marshal(metaDataStore)
+		metaDataBytes, _ := json.Marshal(metadataStore)
 		APIstub.PutState(metaDataStore.Key, metaDataBytes)
 	} else {
-		metaDataStore := MetaDataStore{
+		metadataStore := metaDataStore{
 			Doctype:  "MetaData Store",
 			User:     "ACHE already",
 			Metadata: metaData,
@@ -322,7 +322,7 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 	queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-	var codeData MetaDataStore
+	var codeData metaDataStore
 	_ = json.Unmarshal(codeData, &queryResults)
 	return codeData.User
 }
