@@ -68,6 +68,15 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 			console.error("error from query = ", query_responses[0]);
 		} else {
 			console.log("Response is ", query_responses[0].toString());
+
+			let resultJson = JSON.parse(query_responses[0].toString())
+			let arr = []
+			for (var i in resultJson.TList)
+			   {
+				   var name = resultJson.TList[i].Tal;
+				   arr.push(name)
+			   }
+			   console.log("Response is ", arr);
 		}
 	} else {
 		console.log("No payloads were returned from query");
