@@ -30,11 +30,9 @@ package main
  */
 import (
 	"bytes"
-	"crypto/sha1"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	sc "github.com/hyperledger/fabric/protos/peer"
 )
@@ -412,7 +410,7 @@ func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args 
 	}
 	var binbuf bytes.Buffer
 	binary.Write(&binbuf, binary.BigEndian, codeData.TList)
-	return shim.Succes(binbuf.Bytes())
+	return shim.Succes((binbuf.Bytes()))
 }
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
