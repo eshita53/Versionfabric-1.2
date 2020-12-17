@@ -54,8 +54,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	const request = {
 		//targets : --- letting this default to the peers assigned to the channel
 		chaincodeId: 'fabcar',
-		fcn: 'returnTalList',
-		args: ['www.idp.sust.com']
+		fcn: 'approval',
+		args: ['www.sp2.sust.com']
 	};
 
 	// send the query proposal to the peer
@@ -69,13 +69,13 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		} else {
 			console.log("Response is ", query_responses[0].toString());
 
-			let resultJson = JSON.parse(query_responses[0].toString())
+			//let resultJson = JSON.parse(query_responses[0].toString())
 			//let arr = []
 		//	console.log("Response is ", resultJson.TList);
 			//let arr = []
-			resultJson.forEach(function(element) {
-				console.log(element.TList[Tal]);
-			  });
+			// resultJson.forEach(function(element) {
+			// 	console.log(element.TList[Tal]);
+			//   });
 		}
 	} else {
 		console.log("No payloads were returned from query");
