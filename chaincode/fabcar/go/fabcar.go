@@ -138,7 +138,10 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.talListDelete(APIstub, args)
 	} else if function == "returnTalList" {
 		return s.returnTalList(APIstub, args)
+	} else if function == "talListReturn" {
+		return s.talListReturn(APIstub, args)
 	}
+	
 
 	return shim.Error("Invalid Smart Contract function name.")
 }
@@ -320,17 +323,36 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 
 }
 
-func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args []string) (list) {
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 	entityID := args[0]
 
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
-	queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
+	queryResults, _ := APIstub.GetQueryResult(queryString)
+	defer queryResults.Close()
+	var codeData talList
+	for queryResults.HasNext() {
+		queryResultsData, _ := queryResults.Next()
+		_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	}
 
-	return shim.Success(queryResults)
+	return codeData.TList
 }
+func (s *SmartContract) talListReturn(APIstub shim.ChaincodeStubInterface, args []string) sc.Response{
+
+	list := s.talListFetch(APIstub, args)
+	fetchedList,_= json.Marshal(list)
+	
+	return  shim.Success(fetchedList)
+}
+
+
+
+
+
+
 
 ///tallIstDelete works perfectly
 func (s *SmartContract) talListDelete(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -362,6 +384,42 @@ func (s *SmartContract) talListDelete(APIstub shim.ChaincodeStubInterface, args 
 	APIstub.PutState(codeData.Key, codeDataBytes)
 	return shim.Success(nil)
 }
+func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+	entityID := args[0]
+	tal := args[1]
+
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
+	queryResults, _ := APIstub.GetQueryResult(queryString)
+	var codeData talList
+	for queryResults.HasNext() {
+		queryResultsData, _ := queryResults.Next()
+		_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	}
+	var pos int
+	for _, service := range codeData.TList {
+		if service.Tal == tal {
+			codeData.TList = append(codeData.TList[:pos], codeData.TList[pos+1:]...)
+			if pos > 0 {
+				pos = pos - 1
+			}
+			continue
+		}
+		pos++
+	}
+	codeDataBytes, _ := json.Marshal(codeData)
+	APIstub.PutState(codeData.Key, codeDataBytes)
+	return shim.Success(nil)
+}
+
+
+
+
+
+
+
 
 //func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
@@ -373,15 +431,7 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 		queryResultsData, _ := queryResults.Next()
 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	}
-	// queryResults, _ := getJSONQueryResultForQueryString(APIstub, queryString)
-	// var codeData metaDataStore
-	// // // for queryResults.HasNext() {
-	// // // 	queryResultsData, _ := queryResults.Next()
-	// _ = json.Unmarshal(queryResults, &codeData)
-	// // // }
-	// //_ = json.Unmarshal(queryResults)
 
-	// shim.Success([]byte(codeData.User))
 	return codeData.User
 }
 func (s *SmartContract) entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
