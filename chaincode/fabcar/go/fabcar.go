@@ -426,17 +426,20 @@ func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args 
 	entityID := args[0]
 	//tal := args[1]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
-	queryResults, _ := APIstub.GetQueryResult(queryString)
-	defer queryResults.Close()
-	var codeData talList
-	for queryResults.HasNext() {
-		queryResultsData, _ := queryResults.Next()
-		_ = json.Unmarshal(queryResultsData.Value, &codeData)
-	}
+	// queryResults, _ := APIstub.GetQueryResult(queryString)
+	// defer queryResults.Close()
+	// var codeData talList
+	// for queryResults.HasNext() {
+	// 	queryResultsData, _ := queryResults.Next()
+	// 	_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	// }
 	// var binbuf bytes.Buffer
 	// binary.Write(&binbuf, binary.BigEndian, codeData.TList)
 	//return shim.Success(binbuf.Bytes())
-	return shim.Success(codeData)
+	queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
+	return shim.Success(queryResults)
+
+	///	return shim.Success(codeData)
 }
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
