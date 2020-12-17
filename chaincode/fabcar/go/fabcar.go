@@ -415,7 +415,7 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 	resultsIterator, _ := APIstub.GetQueryResult(queryString)
 	defer resultsIterator.Close()
 	var codeData newCodeStore
-	var results []byte
+	var results []queryResultNewCode
 	//	var queryResults []byte
 	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
@@ -478,7 +478,7 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	return codeData.User
 }
 
-func metaDataFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+func (s *SmartContract) metaDataFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
 
