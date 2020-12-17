@@ -431,9 +431,6 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 			results = append(results, queryResult)
 			//results = codeData.WhichIDP
 		}
-
-		//queryResult := QueryResultNewCode{Key: queryResponse.Key, Record: codeData}
-
 		return shim.Success(results)
 	}
 }
