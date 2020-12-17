@@ -30,7 +30,6 @@ package main
  */
 import (
 	"bytes"
-	"encoding/binary"
 	"encoding/json"
 	"fmt"
 
@@ -136,8 +135,6 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.talListDelete(APIstub, args)
 	} else if function == "returnTalList" {
 		return s.returnTalList(APIstub, args)
-	} else if function == "talListReturn" {
-		return s.talListReturn(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -320,33 +317,23 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 
 }
 
-func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args []string) []byte {
-	// if len(args) != 1 {
-	// 	return shim.Error("Incorrect number of arguments. Expecting 1")
-	// }
-	entityID := args[0]
+// func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args []string) []byte {
+// 	// if len(args) != 1 {
+// 	// 	return shim.Error("Incorrect number of arguments. Expecting 1")
+// 	// }
+// 	entityID := args[0]
 
-	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
-	queryResults, _ := APIstub.GetQueryResult(queryString)
-	defer queryResults.Close()
-	var codeData talList
-	for queryResults.HasNext() {
-		queryResultsData, _ := queryResults.Next()
-		_ = json.Unmarshal(queryResultsData.Value, &codeData)
-	}
+// 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
+// 	queryResults, _ := APIstub.GetQueryResult(queryString)
+// 	defer queryResults.Close()
+// 	var codeData talList
+// 	for queryResults.HasNext() {
+// 		queryResultsData, _ := queryResults.Next()
+// 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
+// 	}
 
-	return codeData.TList
-}
-func (s *SmartContract) talListReturn(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-
-	list := s.talListFetch(APIstub, args)
-	fetchedList, _ = json.Marshal(list)
-	// var binbuf bytes.Buffer
-	// binary.Write(&binbuf, binary.BigEndian, fetchedList)
-	// return shim.Success(binbuf.Bytes())
-
-	return shim.Success(fetchedList)
-}
+// 	return codeData.TList
+// }
 
 ///tallIstDelete works perfectly
 func (s *SmartContract) talListDelete(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -446,9 +433,10 @@ func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args 
 		queryResultsData, _ := queryResults.Next()
 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	}
-	var binbuf bytes.Buffer
-	binary.Write(&binbuf, binary.BigEndian, codeData.TList)
-	return shim.Success(binbuf.Bytes())
+	// var binbuf bytes.Buffer
+	// binary.Write(&binbuf, binary.BigEndian, codeData.TList)
+	//return shim.Success(binbuf.Bytes())
+	return shim.Success(codeData)
 }
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
