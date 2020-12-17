@@ -140,6 +140,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.storeCode(APIstub, args)
 	} else if function == "approval" {
 		return s.approval(APIstub, args)
+	} else if function == "metaDataFetch" {
+		return s.metaDataFetch(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -413,30 +415,27 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 	resultsIterator, _ := APIstub.GetQueryResult(queryString)
 	defer resultsIterator.Close()
 	var codeData newCodeStore
-	var results  []queryResultNewCode
-//	var queryResults []byte
+	var results []byte
+	//	var queryResults []byte
 	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
-		if codeData.ForWhichSP == author  {
+		if codeData.ForWhichSP == author {
 			queryResult := queryResultNewCode{Key: queryResponse.Key, Record: codeData}
 			//queryResult := QueryResultNewCode{Key: codeData.Key, Record: codeData}
 			results = append(results, queryResult)
 			//results = codeData.ForWhichSP
-		} else	if codeData.WhichIDP == author {
+		} else if codeData.WhichIDP == author {
 			queryResult := queryResultNewCode{Key: queryResponse.Key, Record: codeData}
-				//queryResult := QueryResultNewCode{Key: codeData.Key, Record: codeData}
-				results = append(results, queryResult)
+			//queryResult := QueryResultNewCode{Key: codeData.Key, Record: codeData}
+			results = append(results, queryResult)
 			//results = codeData.WhichIDP
 		}
-		
+
 		//queryResult := QueryResultNewCode{Key: queryResponse.Key, Record: codeData}
-	
-	
-	//return shim.Success(queryResults)
-}    var binbuf bytes.Buffer
-     binary.Write(&binbuf, binary.BigEndian, results)
-     return shim.Success(binbuf.Bytes())
+
+		return shim.Success(results)
+	}
 }
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 2 {
@@ -481,6 +480,15 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 
 	return codeData.User
 }
+
+func metaDataFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	user := args[0]
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
+
+	queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
+	return shim.Success(queryResults)
+}
+
 func (s *SmartContract) entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	entityID := args[0]
 	//tal := args[1]
