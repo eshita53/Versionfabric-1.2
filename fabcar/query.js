@@ -75,6 +75,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 			for (var i in resultJson)
 			   {
 				   var name = resultJson[i].TList;
+				   console.log(resultJson[i].TList)
 				   arr.push(name)
 			   }
 			   console.log("Response is ", arr);
