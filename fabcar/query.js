@@ -67,7 +67,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		if (query_responses[0] instanceof Error) {
 			console.error("error from query = ", query_responses[0]);
 		} else {
-			console.log("Response is ", query_responses[0].toString());
+			 console.log("Response is ", query_responses[0].toString());
 
 			//let resultJson = JSON.parse(query_responses[0].toString())
 			//let arr = []

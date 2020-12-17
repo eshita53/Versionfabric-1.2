@@ -414,21 +414,23 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 	defer resultsIterator.Close()
 	var codeData newCodeStore
 	//var results []queryResultNewCode
-	//results := " "
+	var results 
 	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
 		if codeData.ForWhichSP == author {
 			queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\"}}", author)
 			queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-			return shim.Success(queryResults)
+			//return shim.Success(queryResults)
+			results = queryResults
 		} else if codeData.WhichIDP == author {
 			queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"WhichIDP\": \"%s\"}}", author)
 			queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-			return shim.Success(queryResults)
+			results = queryResults
+			//return shim.Success(queryResults)
 		}
 	}
-	return shim.Success(nil)
+	return shim.Success(results)
 
 }
 
