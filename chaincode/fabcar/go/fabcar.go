@@ -432,12 +432,12 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 		//return shim.Success(queryResults)
 	} else if i == 2 {
 		queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"WhichIDP\": \"%s\"}}", author)
-		queryResults, _  = getQueryResultForQueryString(APIstub, queryString)
+		queryResults, _ = getQueryResultForQueryString(APIstub, queryString)
 		//results = queryResults
-	//	return shim.Success(queryResults)
+		//	return shim.Success(queryResults)
 
 	}
-	return shim.Success(QueryResults)
+	return shim.Success(queryResults)
 }
 
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
