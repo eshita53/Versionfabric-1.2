@@ -62,8 +62,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	var request = {
 		//targets: let default to the peer assigned to the client
 		chaincodeId: 'fabcar',
-		fcn: 'storeTalList',
-		args: ['www.idp.sust.com','http://sp5.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp'],
+		fcn: 'talListDelete',
+		args: ['www.idp.sust.com','http://sp5.sust.com/simplesaml/.php/saml/sp/metadata.php/default-sp'],
 		chainId: 'mychannel',
 		txId: tx_id
 	};
