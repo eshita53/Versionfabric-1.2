@@ -414,7 +414,7 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\"}}")
 	resultsIterator, _ := APIstub.GetQueryResult(queryString)
 	defer resultsIterator.Close()
-	var codeData newCodeStore
+	var codeData new(newCodeStore)
 	var results []queryResultNewCode
 	//	var queryResults []byte
 	for resultsIterator.HasNext() {
@@ -431,8 +431,8 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 			results = append(results, queryResult)
 			//results = codeData.WhichIDP
 		}
-		return shim.Success(results)
 	}
+	return shim.Success(results)
 }
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 2 {
