@@ -414,23 +414,30 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 	defer resultsIterator.Close()
 	var codeData newCodeStore
 	//var results []queryResultNewCode
-	var results []byte
+	var i = 0
 	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
 		if codeData.ForWhichSP == author {
-			queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\"}}", author)
-			queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-			return shim.Success(queryResults)
-		}
-		if codeData.WhichIDP == author {
-			queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"WhichIDP\": \"%s\"}}", author)
-			queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-			//results = queryResults
-			return shim.Success(queryResults)
+			i=1
+		
+		}else if codeData.WhichIDP == author {
+			i=2
+		
 		}
 	}
-	//return shim.Success(results)
+	if i== 1 {
+		queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\"}}", author)
+		queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
+		return shim.Success(queryResults)
+	} elseif i == 2  {
+		queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"WhichIDP\": \"%s\"}}", author)
+		queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
+		//results = queryResults
+		return shim.Success(queryResults)
+
+	}
+	return shim.Success(nil)
 }
 
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
