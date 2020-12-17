@@ -414,7 +414,7 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 	defer resultsIterator.Close()
 	var codeData newCodeStore
 	//var results []queryResultNewCode
-	var results 
+	var results []byte
 	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
