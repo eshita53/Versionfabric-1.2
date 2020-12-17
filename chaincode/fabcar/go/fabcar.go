@@ -421,17 +421,16 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 		if codeData.ForWhichSP == author {
 			queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\"}}", author)
 			queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-			//return shim.Success(queryResults)
-			results = queryResults
-		} else if codeData.WhichIDP == author {
+			return shim.Success(queryResults)
+		}
+		if codeData.WhichIDP == author {
 			queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"WhichIDP\": \"%s\"}}", author)
 			queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-			results = queryResults
-			//return shim.Success(queryResults)
+			//results = queryResults
+			return shim.Success(queryResults)
 		}
 	}
-	return shim.Success(results)
-
+	//return shim.Success(results)
 }
 
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
