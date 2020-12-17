@@ -415,7 +415,7 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 	var codeData newCodeStore
 	var results  []queryResultNewCode
 //	var queryResults []byte
-	|	for resultsIterator.HasNext() {
+	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
 		if codeData.ForWhichSP == author  {
@@ -429,15 +429,15 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 				results = append(results, queryResult)
 			//results = codeData.WhichIDP
 		}
-		var binbuf bytes.Buffer
-	    binary.Write(&binbuf, binary.BigEndian, results)
-	    return shim.Success(binbuf.Bytes())
+		
 		//queryResult := QueryResultNewCode{Key: queryResponse.Key, Record: codeData}
 	
 	
 	//return shim.Success(queryResults)
+}    var binbuf bytes.Buffer
+     binary.Write(&binbuf, binary.BigEndian, results)
+     return shim.Success(binbuf.Bytes())
 }
-
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
