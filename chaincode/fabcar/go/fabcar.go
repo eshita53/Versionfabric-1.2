@@ -426,7 +426,7 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 			return shim.Success(queryResults)
 		}
 	}
-	//	return shim.Success(nil)
+	return shim.Success(nil)
 
 }
 
