@@ -70,16 +70,16 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 			console.log("Response is ", query_responses[0].toString());
 
 			let resultJson = JSON.parse(query_responses[0].toString())
-			let arr = []
-			//console.log("Response is ", resultJson.TList);
-			for (var i in resultJson)
-			   {
-				   var name = resultJson[i].TList;
-				   console.log(resultJson[i].TList)
-				   arr.push(name)
-			   }
-			   console.log("Response is ", arr);
-		}
+		//	let arr = []
+			console.log("Response is ", resultJson.TList);
+		// 	for (var i in resultJson)
+		// 	   {
+		// 		   var name = resultJson[i].TList;
+		// 		   console.log(resultJson[i].TList)
+		// 		   arr.push(name)
+		// 	   }
+		// 	   console.log("Response is ", arr);
+		// }
 	} else {
 		console.log("No payloads were returned from query");
 	}
