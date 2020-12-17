@@ -412,7 +412,7 @@ func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args 
 	}
 	var binbuf bytes.Buffer
 	binary.Write(&binbuf, binary.BigEndian, codeData.TList)
-	return shim.Success(sha1.Sum(binbuf.Bytes()))
+	return shim.Succes(binbuf.Bytes())
 }
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
