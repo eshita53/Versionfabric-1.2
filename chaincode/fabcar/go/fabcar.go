@@ -132,8 +132,6 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.storeMetaData(APIstub, args)
 	} else if function == "storeTalList" {
 		return s.storeTalList(APIstub, args)
-	} else if function == "talListFetch" {
-		return s.talListFetch(APIstub, args)
 	} else if function == "talListDelete" {
 		return s.talListDelete(APIstub, args)
 	} else if function == "returnTalList" {
@@ -141,7 +139,6 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	} else if function == "talListReturn" {
 		return s.talListReturn(APIstub, args)
 	}
-	
 
 	return shim.Error("Invalid Smart Contract function name.")
 }
@@ -323,7 +320,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 
 }
 
-func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args []string) (list) {
+func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args []string) []list {
 	if len(args) != 1 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
@@ -340,19 +337,13 @@ func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args [
 
 	return codeData.TList
 }
-func (s *SmartContract) talListReturn(APIstub shim.ChaincodeStubInterface, args []string) sc.Response{
+func (s *SmartContract) talListReturn(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	list := s.talListFetch(APIstub, args)
-	fetchedList,_= json.Marshal(list)
-	
-	return  shim.Success(fetchedList)
+	fetchedList, _ = json.Marshal(list)
+
+	return shim.Success(fetchedList)
 }
-
-
-
-
-
-
 
 ///tallIstDelete works perfectly
 func (s *SmartContract) talListDelete(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -413,13 +404,6 @@ func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []stri
 	APIstub.PutState(codeData.Key, codeDataBytes)
 	return shim.Success(nil)
 }
-
-
-
-
-
-
-
 
 //func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
