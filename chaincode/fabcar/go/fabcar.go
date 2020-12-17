@@ -131,8 +131,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.storeMetaData(APIstub, args)
 	} else if function == "storeTalList" {
 		return s.storeTalList(APIstub, args)
-	} else if function == "entityFetch" {
-		return s.entityFetch(APIstub, args)
+	} else if function == "talListFetch" {
+		return s.talListFetch(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
