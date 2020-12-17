@@ -43,6 +43,7 @@ type SmartContract struct {
 
 var j = 0
 var m = 0
+var i =0
 
 // Define the car structure, with 4 properties.  Structure tags are used by encoding/json library
 type Car struct {
@@ -135,6 +136,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.talListDelete(APIstub, args)
 	} else if function == "returnTalList" {
 		return s.returnTalList(APIstub, args)
+	} else if function == "storeCode" {
+		return s.storeCode(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -312,6 +315,54 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 		APIstub.PutState(codeData.Key, codeDataBytes)
 	} else {
 		APIstub.PutState(tallist.Key, talListBytes)
+	}
+	return shim.Success(nil)
+
+}
+func (s *SmartContract) storeCode(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 7 {
+		return shim.Error("Incorrect number of arguments. Expecting 7 ")
+	}
+	forWhichSp := args[0],
+	whichIdp := args[1],
+	spCode := args[2], 
+	idpCode := args[3],
+	spCheck := args[4], 
+	idpCheck := args[5],
+	author := args[6]
+	i++
+	key := string(i)
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\", \"WhichIDP\": \"%s\"}}",forWhichSp,whichIdp)
+	resultsIterator, _ := APIstub.GetQueryResult(queryString)
+	defer resultsIterator.Close()
+	var codeData newCodeStore
+	for resultsIterator.HasNext() {
+		queryResponse, _ := resultsIterator.Next()
+		_ = json.Unmarshal(queryResponse.Value, codeData)
+	}
+	codeStore := newCodeStore{
+		Doctype: "Code Store",
+		ForWhichSP : forWhichSp,
+		WhichIDP : whichIdp,
+		SPCode : spCode,
+		IDPCode: idpCode,
+		SPCheck: spCheck,
+		IDPCheck: idpCheck,
+		Key : key,
+	}
+
+	if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
+		if author == "sp" {
+			codeData.SPCode = spCode
+		} else if author == "idp"{
+			codeData.IDPCode = idpCode
+		}
+		codeDataBytes, _ := json.Marshal(codeData)
+	    APIstub.PutState(codeData.Key,codeDataBytes)
+	} else{
+		codeDataBytes, _ := json.Marshal(codeStore)
+		APIstub.PutState(codeStore.Key,codeDataBytes)
 	}
 	return shim.Success(nil)
 
