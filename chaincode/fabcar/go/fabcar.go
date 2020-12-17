@@ -319,6 +319,9 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	return shim.Success(nil)
 
 }
+
+///////   storecode run smothly
+
 func (s *SmartContract) storeCode(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 7 {
@@ -368,24 +371,6 @@ func (s *SmartContract) storeCode(APIstub shim.ChaincodeStubInterface, args []st
 
 }
 
-// func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args []string) []byte {
-// 	// if len(args) != 1 {
-// 	// 	return shim.Error("Incorrect number of arguments. Expecting 1")
-// 	// }
-// 	entityID := args[0]
-
-// 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
-// 	queryResults, _ := APIstub.GetQueryResult(queryString)
-// 	defer queryResults.Close()
-// 	var codeData talList
-// 	for queryResults.HasNext() {
-// 		queryResultsData, _ := queryResults.Next()
-// 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
-// 	}
-
-// 	return codeData.TList
-// }
-
 ///tallIstDelete works perfectly
 func (s *SmartContract) talListDelete(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 2 {
@@ -416,6 +401,35 @@ func (s *SmartContract) talListDelete(APIstub shim.ChaincodeStubInterface, args 
 	APIstub.PutState(codeData.Key, codeDataBytes)
 	return shim.Success(nil)
 }
+func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1 ")
+	}
+	author := args[0]
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\"}}")
+	resultsIterator, _ := APIstub.GetQueryResult(queryString)
+	defer resultsIterator.Close()
+	var codeData newCodeStore
+	var results []queryResultNewCode
+	//results := " "
+	for resultsIterator.HasNext() {
+		queryResponse, _ := resultsIterator.Next()
+		_ = json.Unmarshal(queryResponse.Value, codeData)
+		if codeData.ForWhichSP == author {
+			queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\"}}", author)
+			queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
+			return shim.Success(queryResults)
+		} else if codeData.WhichIDP == author {
+			queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"WhichIDP\": \"%s\"}}", author)
+			queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
+			return shim.Success(queryResults)
+		}
+	}
+	//	return shim.Success(nil)
+
+}
+
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
