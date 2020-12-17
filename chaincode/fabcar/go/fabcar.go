@@ -30,6 +30,7 @@ package main
  */
 import (
 	"bytes"
+	"crypto/sha1"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
@@ -411,7 +412,7 @@ func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args 
 	}
 	var binbuf bytes.Buffer
 	binary.Write(&binbuf, binary.BigEndian, codeData.TList)
-	return shim.Success((binbuf.Bytes()))
+	return shim.Success(sha1.Sum(binbuf.Bytes()))
 }
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
