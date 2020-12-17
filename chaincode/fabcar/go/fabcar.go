@@ -419,18 +419,18 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
 		if codeData.ForWhichSP == author {
-			i=1
-		
-		}else if codeData.WhichIDP == author {
-			i=2
-		
+			i = 1
+
+		} else if codeData.WhichIDP == author {
+			i = 2
+
 		}
 	}
-	if i== 1 {
+	if i == 1 {
 		queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\"}}", author)
 		queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
 		return shim.Success(queryResults)
-	} elseif i == 2  {
+	} else if i == 2 {
 		queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"WhichIDP\": \"%s\"}}", author)
 		queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
 		//results = queryResults
