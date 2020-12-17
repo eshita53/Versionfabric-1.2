@@ -334,6 +334,7 @@ func (s *SmartContract) talListDelete(APIstub shim.ChaincodeStubInterface, args 
 		return shim.Error("Incorrect number of arguments. Expecting 1")
 	}
 	entityID := args[0]
+	tal := args[1]
 
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
 	queryResults, _ := APIstub.GetQueryResult(queryString)
