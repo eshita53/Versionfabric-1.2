@@ -71,7 +71,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 
 			let resultJson = JSON.parse(query_responses[0].toString())
 			//let arr = []
-			console.log("Response is ", resultJson);
+			console.log("Response is ", resultJson.TList);
 		}
 	} else {
 		console.log("No payloads were returned from query");
