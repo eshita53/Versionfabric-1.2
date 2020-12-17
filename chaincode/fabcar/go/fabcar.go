@@ -336,7 +336,7 @@ func (s *SmartContract) talListDelete(APIstub shim.ChaincodeStubInterface, args 
 	entityID := args[0]
 
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
-	//	queryResults, _ := APIstub.GetQueryResult(queryString)
+	queryResults, _ := APIstub.GetQueryResult(queryString)
 	var codeData talList
 	for queryResults.HasNext() {
 		queryResultsData, _ := queryResults.Next()
