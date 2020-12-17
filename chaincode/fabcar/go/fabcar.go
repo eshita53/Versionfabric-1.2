@@ -413,31 +413,29 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 	resultsIterator, _ := APIstub.GetQueryResult(queryString)
 	defer resultsIterator.Close()
 	var codeData newCodeStore
-	var queryResults []byte
-	var i = 0
-	for resultsIterator.HasNext() {
+	var results  []queryResultNewCode
+//	var queryResults []byte
+	|	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, codeData)
-		if codeData.ForWhichSP == author {
-			i = 1
-
-		} else if codeData.WhichIDP == author {
-			i = 2
-
+		if codeData.ForWhichSP == author  {
+			queryResult := queryResultNewCode{Key: queryResponse.Key, Record: codeData}
+			//queryResult := QueryResultNewCode{Key: codeData.Key, Record: codeData}
+			results = append(results, queryResult)
+			//results = codeData.ForWhichSP
+		} else	if codeData.WhichIDP == author {
+			queryResult := queryResultNewCode{Key: queryResponse.Key, Record: codeData}
+				//queryResult := QueryResultNewCode{Key: codeData.Key, Record: codeData}
+				results = append(results, queryResult)
+			//results = codeData.WhichIDP
 		}
-	}
-	if i == 1 {
-		queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\"}}", author)
-		queryResults, _ = getQueryResultForQueryString(APIstub, queryString)
-		//return shim.Success(queryResults)
-	} else if i == 2 {
-		queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"WhichIDP\": \"%s\"}}", author)
-		queryResults, _ = getQueryResultForQueryString(APIstub, queryString)
-		//results = queryResults
-		//	return shim.Success(queryResults)
-
-	}
-	return shim.Success(queryResults)
+		var binbuf bytes.Buffer
+	    binary.Write(&binbuf, binary.BigEndian, results)
+	    return shim.Success(binbuf.Bytes())
+		//queryResult := QueryResultNewCode{Key: queryResponse.Key, Record: codeData}
+	
+	
+	//return shim.Success(queryResults)
 }
 
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
