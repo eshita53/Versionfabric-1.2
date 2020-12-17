@@ -135,6 +135,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.talListFetch(APIstub, args)
 	} else if function == "talListDelete" {
 		return s.talListDelete(APIstub, args)
+	} else if function == "returnTalList" {
+		return s.returnTalList(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -329,6 +331,7 @@ func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args [
 	return shim.Success(queryResults)
 }
 
+///tallIstDelete works perfectly
 func (s *SmartContract) talListDelete(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
@@ -391,28 +394,22 @@ func (s *SmartContract) entityFetch(APIstub shim.ChaincodeStubInterface, args []
 		queryResultsData, _ := queryResults.Next()
 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	}
-	// queryResults, _ := getJSONQueryResultForQueryString(APIstub, queryString)
-	// var codeData metaDataStore
-	// // // for queryResults.HasNext() {
-	// // // 	queryResultsData, _ := queryResults.Next()
-	// _ = json.Unmarshal(queryResults, &codeData)
-	// // // }
-	// //_ = json.Unmarshal(queryResults)
-
 	return shim.Success([]byte(codeData.EntityID))
-	//return codeData.
 }
 
-// queryResults, _ := getJSONQueryResultForQueryString(APIstub, queryString)
-// var codeData metaDataStore
-// // // for queryResults.HasNext() {
-// // // 	queryResultsData, _ := queryResults.Next()
-// _ = json.Unmarshal(queryResults, &codeData)
-// // // }
-// //_ = json.Unmarshal(queryResults)
-
-// shim.Success([]byte(codeData.User))
-//return codeData.User
+func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	entityID := args[0]
+	//tal := args[1]
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
+	queryResults, _ := APIstub.GetQueryResult(queryString)
+	defer queryResults.Close()
+	var codeData talList
+	for queryResults.HasNext() {
+		queryResultsData, _ := queryResults.Next()
+		_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	}
+	return shim.Success((codeData.TList))
+}
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
 	start := "{\"values\": "
