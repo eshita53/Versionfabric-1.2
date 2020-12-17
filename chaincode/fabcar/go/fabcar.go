@@ -273,6 +273,7 @@ func (s *SmartContract) storeMetaData(APIstub shim.ChaincodeStubInterface, args 
 
 }
 
+//talList function works perfectly
 func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 2 {
@@ -312,6 +313,26 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 	}
 	return shim.Success(nil)
 
+}
+
+func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+	entityID := args[0]
+
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
+	queryResults, _ := APIstub.GetQueryResult(queryString)
+	defer queryResults.Close()
+	var codeData talList
+	var results []queryResultTalList
+	for queryResults.HasNext() {
+		queryResultsData, _ := queryResults.Next()
+		_ = json.Unmarshal(queryResultsData.Value, &codeData)
+		queryResult := queryResultTalList{Key: queryResponse.Key, Record: codeData}
+		results = append(results, queryResult)
+	}
+	return shim.Success(results)
 }
 
 //func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
