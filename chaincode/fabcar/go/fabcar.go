@@ -30,6 +30,7 @@ package main
  */
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 
@@ -408,6 +409,8 @@ func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args 
 		queryResultsData, _ := queryResults.Next()
 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	}
+	var binbuf bytes.Buffer
+	binary.Write(&binbuf, binary.BigEndian, codeData.TList)
 	return shim.Success((codeData.TList))
 }
 
