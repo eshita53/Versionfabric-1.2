@@ -74,7 +74,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		//	console.log("Response is ", resultJson.TList);
 			//let arr = []
 			resultJson.forEach(function(element) {
-				console.log(element[TList].Tal);
+				console.log(element.TList[Tal]);
 			  });
 		}
 	} else {
