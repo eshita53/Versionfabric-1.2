@@ -320,7 +320,7 @@ func (s *SmartContract) storeTalList(APIstub shim.ChaincodeStubInterface, args [
 
 }
 
-func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args []string) []list {
+func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args []string) []byte {
 	// if len(args) != 1 {
 	// 	return shim.Error("Incorrect number of arguments. Expecting 1")
 	// }
@@ -341,9 +341,9 @@ func (s *SmartContract) talListReturn(APIstub shim.ChaincodeStubInterface, args 
 
 	list := s.talListFetch(APIstub, args)
 	fetchedList, _ = json.Marshal(list)
-	var binbuf bytes.Buffer
-	binary.Write(&binbuf, binary.BigEndian, fetchedList)
-	return shim.Success(binbuf.Bytes())
+	// var binbuf bytes.Buffer
+	// binary.Write(&binbuf, binary.BigEndian, fetchedList)
+	// return shim.Success(binbuf.Bytes())
 
 	return shim.Success(fetchedList)
 }
