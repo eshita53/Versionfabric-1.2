@@ -71,6 +71,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 
 			let resultJson = JSON.parse(query_responses[0].toString())
 			let arr = []
+			console.log("Response is ", resultJson.TList);
 			for (var i in resultJson.TList)
 			   {
 				   var name = resultJson.TList[i].Tal;
