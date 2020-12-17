@@ -324,15 +324,34 @@ func (s *SmartContract) talListFetch(APIstub shim.ChaincodeStubInterface, args [
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
 	queryResults, _ := APIstub.GetQueryResult(queryString)
 	defer queryResults.Close()
-	var codeData talList
-	var results []queryResultTalList
+	// var codeData talList
+	// var results []queryResultTalList
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
 	for queryResults.HasNext() {
-		queryResultsData, _ := queryResults.Next()
-		_ = json.Unmarshal(queryResultsData.Value, &codeData)
-		queryResult := queryResultTalList{Key: queryResponse.Key, Record: codeData}
-		results = append(results, queryResult)
+		queryResponse, _ := queryResults.Next()
+		// if err != nil {
+		// 	return nil, err
+		// }
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"Key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResponse.Key)
+		buffer.WriteString("\"")
+
+		buffer.WriteString(", \"Record\":")
+		// Record is a JSON object, so we write as-is
+		buffer.WriteString(string(queryResponse.Value))
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
 	}
-	return shim.Success(results)
+	buffer.WriteString("]")
+
+	return shim.Success(&buffer)
 }
 
 //func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
