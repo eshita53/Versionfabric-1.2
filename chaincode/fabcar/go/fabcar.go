@@ -443,9 +443,9 @@ func (s *SmartContract) removeApproval(APIstub shim.ChaincodeStubInterface, args
 	forWhichSp := args[0]
 	whichIdp := args[1]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\", \"WhichIDP\": \"%s\"}}", forWhichSp, whichIdp)
-	resultsIterator, _ := ctx.GetStub().GetQueryResult(queryString)
+	resultsIterator, _ := APIstub.GetQueryResult(queryString)
 	defer resultsIterator.Close()
-	codeData := newCodeStore
+	var codeData newCodeStore
 	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, &codeData)
