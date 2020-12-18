@@ -420,25 +420,28 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\"}}")
 	resultsIterator, _ := APIstub.GetQueryResult(queryString)
 	defer resultsIterator.Close()
-	var codeData newCodeStore
+	codeData := new(newCodeStore)
+	var results []queryResultNewCode
 	//var results []byte
 	//	var queryResults []byte
 	for resultsIterator.HasNext() {
 		queryResponse, _ := resultsIterator.Next()
-		_ = json.Unmarshal(queryResponse.Value, &codeData)
+		_ = json.Unmarshal(queryResponse.Value, codeData)
 		if codeData.ForWhichSP == author {
-			//	queryResult := queryResultNewCode{Key: queryResponse.Key, Record: codeData}
+			queryResult := queryResultNewCode{Key: queryResponse.Key, Record: codeData}
 			//queryResult := QueryResultNewCode{Key: codeData.Key, Record: codeData}
-			//results = codeData
-			//results = codeData.ForWhichSP
+			results = append(results, queryResult)
 		} else if codeData.WhichIDP == author {
+			queryResult := queryResultNewCode{Key: queryResponse.Key, Record: codeData}
+			//queryResult := QueryResultNewCode{Key: codeData.Key, Record: codeData}
+			results = append(results, queryResult)
 			//	queryResult := queryResultNewCode{Key: queryResponse.Key, Record: codeData}
 			//queryResult := QueryResultNewCode{Key: codeData.Key, Record: codeData}
 			//	results = codeData
 			//results = codeData.WhichIDP
 		}
 	}
-	return shim.Success(nil)
+	return shim.Success(results)
 }
 
 ////remove approval works perfectly
@@ -510,6 +513,8 @@ func (s *SmartContract) codeInvoke(APIstub shim.ChaincodeStubInterface, args []s
 	//	return  shim.Success([]byte(result))
 	return shim.Success(nil)
 }
+
+//code check works perfectly
 func (s *SmartContract) codeCheck(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 3 {
@@ -547,6 +552,41 @@ func (s *SmartContract) codeCheck(APIstub shim.ChaincodeStubInterface, args []st
 	}
 	return shim.Success([]byte(result))
 	//return shim.Success(nil)
+}
+
+///perfectly return metadata
+func (s *SmartContract) metaDataFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	user := args[0]
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
+
+	///	queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
+	queryResults, _ := APIstub.GetQueryResult(queryString)
+	var codeData metaDataStore
+	for queryResults.HasNext() {
+		queryResultsData, _ := queryResults.Next()
+		_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	}
+	arr := []byte(codeData.Metadata)
+	return shim.Success(arr)
+}
+
+//perfectly return tallits
+func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+	entityID := args[0]
+	//tal := args[1]
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
+	queryResults, _ := APIstub.GetQueryResult(queryString)
+	defer queryResults.Close()
+	var codeData talList
+	for queryResults.HasNext() {
+		queryResultsData, _ := queryResults.Next()
+		_ = json.Unmarshal(queryResultsData.Value, &codeData)
+	}
+	tLists := codeData.TList
+	tListsBytes := new(bytes.Buffer)
+	json.NewEncoder(tListsBytes).Encode(tLists)
+
+	return shim.Success(tListsBytes.Bytes())
 }
 
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -592,22 +632,6 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	return codeData.User
 }
 
-///perfectly return metadata
-func (s *SmartContract) metaDataFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-	user := args[0]
-	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
-
-	///	queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-	queryResults, _ := APIstub.GetQueryResult(queryString)
-	var codeData metaDataStore
-	for queryResults.HasNext() {
-		queryResultsData, _ := queryResults.Next()
-		_ = json.Unmarshal(queryResultsData.Value, &codeData)
-	}
-	arr := []byte(codeData.Metadata)
-	return shim.Success(arr)
-}
-
 func (s *SmartContract) entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	entityID := args[0]
 	//tal := args[1]
@@ -620,29 +644,6 @@ func (s *SmartContract) entityFetch(APIstub shim.ChaincodeStubInterface, args []
 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	}
 	return shim.Success([]byte(codeData.EntityID))
-}
-
-//perfectly return tallits
-func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
-	entityID := args[0]
-	//tal := args[1]
-	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"TAL List\",\"EntityID\": \"%s\"}}", entityID)
-	queryResults, _ := APIstub.GetQueryResult(queryString)
-	defer queryResults.Close()
-	var codeData talList
-	for queryResults.HasNext() {
-		queryResultsData, _ := queryResults.Next()
-		_ = json.Unmarshal(queryResultsData.Value, &codeData)
-	}
-	tLists := codeData.TList
-	tListsBytes := new(bytes.Buffer)
-	json.NewEncoder(tListsBytes).Encode(tLists)
-
-	return shim.Success(tListsBytes.Bytes())
-	// queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
-	// return shim.Success(queryResults)
-
-	///	return shim.Success(codeData)
 }
 
 func getJSONQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {

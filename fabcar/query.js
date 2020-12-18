@@ -62,9 +62,16 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	const request = {
 		//targets : --- letting this default to the peers assigned to the channel
 		chaincodeId: 'fabcar',
-		fcn: 'codeCheck',
-		args: ['www.sp3.sust.com', 'www.idp.sust.com', 'sp']
+		fcn: 'approval',
+		args: ['www.sp3.sust.com']
 	};
+
+	// const request = {
+	// 	//targets : --- letting this default to the peers assigned to the channel
+	// 	chaincodeId: 'fabcar',
+	// 	fcn: 'codeCheck',
+	// 	args: ['www.sp3.sust.com', 'www.idp.sust.com', 'sp']
+	// };
 
 	// send the query proposal to the peer
 	return channel.queryByChaincode(request);
