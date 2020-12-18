@@ -426,7 +426,7 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 			//results = codeData
 			//results = codeData.ForWhichSP
 		} else if codeData.WhichIDP == author {
-			queryResult := queryResultNewCode{Key: queryResponse.Key, Record: codeData}
+			//	queryResult := queryResultNewCode{Key: queryResponse.Key, Record: codeData}
 			//queryResult := QueryResultNewCode{Key: codeData.Key, Record: codeData}
 			//	results = codeData
 			//results = codeData.WhichIDP
