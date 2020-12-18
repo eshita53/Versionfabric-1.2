@@ -63,7 +63,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 		//targets: let default to the peer assigned to the client
 		chaincodeId: 'fabcar',
 		fcn: 'storeCode',
-		args: ['www.sp2.sust.com', 'www.idp.sust.com', '126780', '123514', 'pending', 'pending', 'sp'],
+		args: ['www.sp3.sust.com', 'www.idp.sust.com', '126880', '126514', 'pending', 'pending', 'sp'],
 		chainId: 'mychannel',
 		txId: tx_id
 	};
