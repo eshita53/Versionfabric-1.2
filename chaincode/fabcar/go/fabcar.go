@@ -432,8 +432,41 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 			//results = codeData.WhichIDP
 		}
 	}
-	return shim.Success(results)
+	return shim.Success(nil)
 }
+
+func (s *SmartContract) removeApproval(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 1 ")
+	}
+	forWhichSp := args[0]
+	whichIdp := args[1]
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\", \"WhichIDP\": \"%s\"}}", forWhichSp, whichIdp)
+	resultsIterator, _ := ctx.GetStub().GetQueryResult(queryString)
+	defer resultsIterator.Close()
+	codeData := newCodeStore
+	for resultsIterator.HasNext() {
+		queryResponse, _ := resultsIterator.Next()
+		_ = json.Unmarshal(queryResponse.Value, &codeData)
+	}
+	//var result string
+	if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
+		//codeData.Doctype = " "
+		//codeData.ForWhichSP = " "
+		//codeData.WhichIDP =  " "
+		//codeData.SPCheck = " "
+		//codeData.IDPCheck = " "
+		//codeData.SPCode = " "
+		//codeData.IDPCode = " "
+		//  codeDataBytes, _ := json.Marshal(codeData)
+		//  ctx.GetStub().PutState(codeData.Key, codeDataBytes)
+		APIstub.DelState(codeData.Key)
+		//	result = codeData.Doctype
+	}
+	return shim.Success(nil)
+}
+
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 2 {
 		return shim.Error("Incorrect number of arguments. Expecting 1")
