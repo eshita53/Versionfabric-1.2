@@ -59,22 +59,22 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	// createCar chaincode function - requires 5 args, ex: args: ['CAR12', 'Honda', 'Accord', 'Black', 'Tom'],
 	// changeCarOwner chaincode function - requires 2 args , ex: args: ['CAR10', 'Dave'],
 	// must send the proposal to endorsing peers
-	// var request = {
-	// 	//targets: let default to the peer assigned to the client
-	// 	chaincodeId: 'fabcar',
-	// 	fcn: 'storeCode',
-	// 	args: ['www.sp3.sust.com', 'www.idp.sust.com', '126780', '123514', 'pending', 'pending', 'sp'],
-	// 	chainId: 'mychannel',
-	// 	txId: tx_id
-	// };
 	var request = {
 		//targets: let default to the peer assigned to the client
 		chaincodeId: 'fabcar',
-		fcn: 'removeApproval',
-		args: ['www.sp2.sust.com', 'www.idp.sust.com'],
+		fcn: 'storeCode',
+		args: ['www.sp2.sust.com', 'www.idp.sust.com', '126780', '123514', 'pending', 'pending', 'sp'],
 		chainId: 'mychannel',
 		txId: tx_id
 	};
+	// var request = {
+	// 	//targets: let default to the peer assigned to the client
+	// 	chaincodeId: 'fabcar',
+	// 	fcn: 'removeApproval',
+	// 	args: ['www.sp2.sust.com', 'www.idp.sust.com'],
+	// 	chainId: 'mychannel',
+	// 	txId: tx_id
+	// };
 	// send the transaction proposal to the peers
 	return channel.sendTransactionProposal(request);
 }).then((results) => {
