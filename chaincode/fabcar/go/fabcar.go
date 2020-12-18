@@ -146,10 +146,9 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.removeApproval(APIstub, args)
 	} else if function == "codeInvoke" {
 		return s.codeInvoke(APIstub, args)
+	} else if function == "codeCheck" {
+		return s.codeCheck(APIstub, args)
 	}
-	// else if function == "codeCheck" {
-	// 	return s.codeCheck(APIstub, args)
-	// }
 
 	return shim.Error("Invalid Smart Contract function name.")
 }
@@ -467,6 +466,7 @@ func (s *SmartContract) removeApproval(APIstub shim.ChaincodeStubInterface, args
 	return shim.Success(nil)
 }
 
+//code invoke works perfectly
 func (s *SmartContract) codeInvoke(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 4 {
@@ -510,6 +510,44 @@ func (s *SmartContract) codeInvoke(APIstub shim.ChaincodeStubInterface, args []s
 	//	return  shim.Success([]byte(result))
 	return shim.Success(nil)
 }
+func (s *SmartContract) codeCheck(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 3 {
+		return shim.Error("Incorrect number of arguments. Expecting 4 ")
+	}
+	forWhichSp := args[0]
+	whichIdp := args[1]
+	author := args[2]
+	//code := args[3]
+
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\", \"WhichIDP\": \"%s\"}}", forWhichSp, whichIdp)
+	resultsIterator, _ := APIstub.GetQueryResult(queryString)
+	defer resultsIterator.Close()
+	var codeData newCodeStore
+	for resultsIterator.HasNext() {
+		queryResponse, _ := resultsIterator.Next()
+		_ = json.Unmarshal(queryResponse.Value, &codeData)
+	}
+	result := "hi"
+	if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
+
+		if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
+			if author == "sp" && codeData.SPCheck == "success" {
+				result = "sp-success"
+				//result = codeData.SPCheck
+			} else if author == "idp" && codeData.IDPCheck == "success" {
+				result = "idp-success"
+
+			} else {
+				result = "code-failed"
+			}
+		} else {
+			result = "code-failed"
+		}
+	}
+	return shim.Success([]byte(result))
+	//return shim.Success(nil)
+}
 
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 2 {
@@ -541,7 +579,6 @@ func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []stri
 	return shim.Success(nil)
 }
 
-//func (s *SmartContract) userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
@@ -555,6 +592,7 @@ func userFetch(APIstub shim.ChaincodeStubInterface, args []string) string {
 	return codeData.User
 }
 
+///perfectly return metadata
 func (s *SmartContract) metaDataFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	user := args[0]
 	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"MetaData Store\",\"User\": \"%s\"}}", user)
@@ -584,6 +622,7 @@ func (s *SmartContract) entityFetch(APIstub shim.ChaincodeStubInterface, args []
 	return shim.Success([]byte(codeData.EntityID))
 }
 
+//perfectly return tallits
 func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	entityID := args[0]
 	//tal := args[1]
@@ -595,11 +634,11 @@ func (s *SmartContract) returnTalList(APIstub shim.ChaincodeStubInterface, args 
 		queryResultsData, _ := queryResults.Next()
 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	}
-	testStruct := codeData.TList
-	reqBodyBytes := new(bytes.Buffer)
-	json.NewEncoder(reqBodyBytes).Encode(testStruct)
+	tLists := codeData.TList
+	tListsBytes := new(bytes.Buffer)
+	json.NewEncoder(tListsBytes).Encode(tLists)
 
-	return shim.Success(reqBodyBytes.Bytes())
+	return shim.Success(tListsBytes.Bytes())
 	// queryResults, _ := getQueryResultForQueryString(APIstub, queryString)
 	// return shim.Success(queryResults)
 
@@ -627,7 +666,6 @@ func (s *SmartContract) fetch(APIstub shim.ChaincodeStubInterface, args []string
 
 	return shim.Success(queryResults)
 }
-
 func (s *SmartContract) queryAllCars(APIstub shim.ChaincodeStubInterface) sc.Response {
 
 	startKey := "CAR0"
