@@ -187,7 +187,7 @@ func (s *SmartContract) initLedger(APIstub shim.ChaincodeStubInterface) sc.Respo
 			{Tal: "http://sp1.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
 			{Tal: "http://sp2.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
 			{Tal: "http://code.sust.com/simplesaml/module.php/saml/sp/metadata.php/default-sp"},
-			{Tal: "http://18.191.122.156:3000/mailmetadata"},
+			{Tal: "http://3.17.180.157:3000/mailmetadata"},
 		},
 		Key: "0001",
 	}
