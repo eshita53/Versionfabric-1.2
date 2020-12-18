@@ -59,14 +59,26 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	// createCar chaincode function - requires 5 args, ex: args: ['CAR12', 'Honda', 'Accord', 'Black', 'Tom'],
 	// changeCarOwner chaincode function - requires 2 args , ex: args: ['CAR10', 'Dave'],
 	// must send the proposal to endorsing peers
+	// var request = {
+	// 	// targets: let default to the peer assigned to the client
+	// 	chaincodeId: 'fabcar',
+	// 	fcn: 'storeCode',
+	// 	args: ['www.sp3.sust.com', 'www.idp.sust.com', '126825', '126584', 'pending', 'pending', 'sp'],
+	// 	chainId: 'mychannel',
+	// 	txId: tx_id
+	// };
 	var request = {
 		// targets: let default to the peer assigned to the client
 		chaincodeId: 'fabcar',
-		fcn: 'storeCode',
-		args: ['www.sp3.sust.com', 'www.idp.sust.com', '126825', '126584', 'pending', 'pending', 'sp'],
+		fcn: 'codeFetch',
+		args: ['www.sp3.sust.com', 'www.idp.sust.com', 'sp', '126825' ],
 		chainId: 'mychannel',
 		txId: tx_id
 	};
+
+
+
+
 	// var request = {
 	// 	//targets: let default to the peer assigned to the client
 	// 	chaincodeId: 'fabcar',
