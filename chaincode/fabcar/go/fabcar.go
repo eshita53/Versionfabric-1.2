@@ -148,6 +148,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.codeInvoke(APIstub, args)
 	} else if function == "codeCheck" {
 		return s.codeCheck(APIstub, args)
+	} else if function == "codeFetch" {
+		return s.codeFetch(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -411,6 +413,8 @@ func (s *SmartContract) talListDelete(APIstub shim.ChaincodeStubInterface, args 
 	APIstub.PutState(codeData.Key, codeDataBytes)
 	return shim.Success(nil)
 }
+
+//approval function works perfectly
 func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 1 {
@@ -555,6 +559,50 @@ func (s *SmartContract) codeCheck(APIstub shim.ChaincodeStubInterface, args []st
 		}
 	}
 	return shim.Success([]byte(result))
+	//return shim.Success(nil)
+}
+
+func (s *SmartContract) codeFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 4 {
+		return shim.Error("Incorrect number of arguments. Expecting 4 ")
+	}
+	forWhichSp := args[0]
+	whichIdp := args[1]
+	author := args[2]
+	code := args[3]
+
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\", \"WhichIDP\": \"%s\"}}", forWhichSp, whichIdp)
+	resultsIterator, _ := APIstub.GetQueryResult(queryString)
+	defer resultsIterator.Close()
+	var codeData newCodeStore
+	for resultsIterator.HasNext() {
+		queryResponse, _ := resultsIterator.Next()
+		_ = json.Unmarshal(queryResponse.Value, &codeData)
+	}
+		var result = codeData.Key
+	if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
+		if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
+			if author == "sp" && codeData.SPCode == code {
+				codeData.SPCheck = "success"
+				codeDataBytes, _ := json.Marshal(codeData)
+				APIstub.PutState(codeData.Key, codeDataBytes)
+				result = "sp-success"
+				//result = codeData.SPCheck
+			} else if author == "idp" && codeData.IDPCode == code {
+				codeData.IDPCheck = "success"
+				codeDataBytes, _ := json.Marshal(codeData)
+				APIstub.PutState(codeData.Key, codeDataBytes)
+					result = "idp-success"
+
+			} else {
+				result = "code-failed"
+			}
+		} else {
+			result = "code-failed"
+		}
+	}
+	return  shim.Success([]byte(result))
 	//return shim.Success(nil)
 }
 
