@@ -441,7 +441,11 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 			//results = codeData.WhichIDP
 		}
 	}
-	return shim.Success(results)
+	approveResult := results
+	approveResultBytes := new(bytes.Buffer)
+	json.NewEncoder(approveResultBytes).Encode(approveResult)
+
+	return shim.Success(approveResultBytes.Bytes())
 }
 
 ////remove approval works perfectly
