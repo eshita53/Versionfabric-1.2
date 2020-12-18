@@ -146,7 +146,7 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.removeApproval(APIstub, args)
 	} else if function == "codeInvoke" {
 		return s.codeInvoke(APIstub, args)
-	} 
+	}
 	// else if function == "codeCheck" {
 	// 	return s.codeCheck(APIstub, args)
 	// }
@@ -566,8 +566,8 @@ func (s *SmartContract) metaDataFetch(APIstub shim.ChaincodeStubInterface, args 
 		queryResultsData, _ := queryResults.Next()
 		_ = json.Unmarshal(queryResultsData.Value, &codeData)
 	}
-
-	return shim.Success([]byte(codeData.Metadata))
+	arr := []byte(codeData.Metadata)
+	return shim.Success(arr)
 }
 
 func (s *SmartContract) entityFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
