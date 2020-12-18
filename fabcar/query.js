@@ -54,8 +54,8 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	const request = {
 		//targets : --- letting this default to the peers assigned to the channel
 		chaincodeId: 'fabcar',
-		fcn: 'removeApproval',
-		args: ['www.sp2.sust.com','www.idp.sust.com']
+		fcn: 'metaDataFetch',
+		args: ['www.idp.org']
 	};
 
 	// send the query proposal to the peer
