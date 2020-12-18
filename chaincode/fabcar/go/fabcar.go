@@ -142,6 +142,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.approval(APIstub, args)
 	} else if function == "metaDataFetch" {
 		return s.metaDataFetch(APIstub, args)
+	} else if function == "removeApproval" {
+		return s.removeApproval(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
