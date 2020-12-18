@@ -580,7 +580,7 @@ func (s *SmartContract) codeFetch(APIstub shim.ChaincodeStubInterface, args []st
 		queryResponse, _ := resultsIterator.Next()
 		_ = json.Unmarshal(queryResponse.Value, &codeData)
 	}
-		var result = codeData.Key
+	var result = codeData.Key
 	if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
 		if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
 			if author == "sp" && codeData.SPCode == code {
@@ -593,7 +593,7 @@ func (s *SmartContract) codeFetch(APIstub shim.ChaincodeStubInterface, args []st
 				codeData.IDPCheck = "success"
 				codeDataBytes, _ := json.Marshal(codeData)
 				APIstub.PutState(codeData.Key, codeDataBytes)
-					result = "idp-success"
+				result = "idp-success"
 
 			} else {
 				result = "code-failed"
@@ -602,7 +602,7 @@ func (s *SmartContract) codeFetch(APIstub shim.ChaincodeStubInterface, args []st
 			result = "code-failed"
 		}
 	}
-	return  shim.Success([]byte(result))
+	return shim.Success([]byte(result))
 	//return shim.Success(nil)
 }
 
