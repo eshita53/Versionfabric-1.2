@@ -60,10 +60,10 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
 	// changeCarOwner chaincode function - requires 2 args , ex: args: ['CAR10', 'Dave'],
 	// must send the proposal to endorsing peers
 	var request = {
-		//targets: let default to the peer assigned to the client
+		// targets: let default to the peer assigned to the client
 		chaincodeId: 'fabcar',
 		fcn: 'storeCode',
-		args: ['www.sp2.sust.com', 'www.idp.sust.com', '126880', '126514', 'pending', 'pending', 'sp'],
+		args: ['www.sp3.sust.com', 'www.idp.sust.com', '126825', '126584', 'pending', 'pending', 'sp'],
 		chainId: 'mychannel',
 		txId: tx_id
 	};
