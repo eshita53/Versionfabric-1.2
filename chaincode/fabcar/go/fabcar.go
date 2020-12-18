@@ -508,7 +508,7 @@ func (s *SmartContract) codeInvoke(APIstub shim.ChaincodeStubInterface, args []s
 		}
 	}
 	//	return  shim.Success([]byte(result))
-	return shim.Success
+	return shim.Success(nil)
 }
 
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
