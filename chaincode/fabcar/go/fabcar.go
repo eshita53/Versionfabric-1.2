@@ -144,6 +144,8 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 		return s.metaDataFetch(APIstub, args)
 	} else if function == "removeApproval" {
 		return s.removeApproval(APIstub, args)
+	} else if function == "codeFetch" {
+		return s.codeFetch(APIstub, args)
 	}
 
 	return shim.Error("Invalid Smart Contract function name.")
@@ -437,6 +439,8 @@ func (s *SmartContract) approval(APIstub shim.ChaincodeStubInterface, args []str
 	return shim.Success(nil)
 }
 
+
+////remove approval works perfectly
 func (s *SmartContract) removeApproval(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
 	if len(args) != 2 {
@@ -454,20 +458,56 @@ func (s *SmartContract) removeApproval(APIstub shim.ChaincodeStubInterface, args
 	}
 	//var result string
 	if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
-		//codeData.Doctype = " "
-		//codeData.ForWhichSP = " "
-		//codeData.WhichIDP =  " "
-		//codeData.SPCheck = " "
-		//codeData.IDPCheck = " "
-		//codeData.SPCode = " "
-		//codeData.IDPCode = " "
-		//  codeDataBytes, _ := json.Marshal(codeData)
-		//  ctx.GetStub().PutState(codeData.Key, codeDataBytes)
+
 		APIstub.DelState(codeData.Key)
-		//	result = codeData.Doctype
+
 	}
 	return shim.Success(nil)
 }
+
+func (s *SmartContract) codeFetch(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
+
+	if len(args) != 4 {
+		return shim.Error("Incorrect number of arguments. Expecting 4 ")
+	}
+	forWhichSp := args[0]
+	 whichIdp :=args[1] 
+	 author :=args[2] 
+	 code := args[3]
+
+	queryString := fmt.Sprintf("{\"selector\": {\"Doctype\": \"Code Store\",\"ForWhichSP\": \"%s\", \"WhichIDP\": \"%s\"}}", forWhichSp, whichIdp)
+	resultsIterator, _ := APIstub.GetQueryResult(queryString)
+	defer resultsIterator.Close()
+	var codeData newCodeStore
+	for resultsIterator.HasNext() {
+		queryResponse, _ := resultsIterator.Next()
+		_ = json.Unmarshal(queryResponse.Value, &codeData)
+	}
+	var result = codeData.Key
+	if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
+		if codeData.ForWhichSP == forWhichSp && codeData.WhichIDP == whichIdp {
+			if author == "sp" && codeData.SPCode == code {
+				codeData.SPCheck = "success"
+				codeDataBytes, _ := json.Marshal(codeData)
+				APIstub.PutState(codeData.Key, codeDataBytes)
+				result = "sp-success"
+				//result = codeData.SPCheck
+			} else if author == "idp" && codeData.IDPCode == code {
+				codeData.IDPCheck = "success"
+				codeDataBytes, _ := json.Marshal(codeData)
+				APIstub.PutState(codeData.Key, codeDataBytes)
+				result = "idp-success"
+
+			} else {
+				result = "code-failed"
+			}
+		} else {
+			result = "code-failed"
+		}
+	}
+	return  shim.Success([]byte(result))
+}
+
 
 func (s *SmartContract) talList(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 2 {
